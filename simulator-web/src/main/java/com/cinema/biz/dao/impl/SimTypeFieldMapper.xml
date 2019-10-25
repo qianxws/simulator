@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cinema.biz.dao.SimTypeFieldMapper">
+  <resultMap id="BaseResultMap" type="com.cinema.biz.model.SimTypeField">
+    <id column="type_field_id" jdbcType="VARCHAR" property="typeFieldId" />
+    <result column="field_id" jdbcType="VARCHAR" property="fieldId" />
+    <result column="type_id" jdbcType="VARCHAR" property="typeId" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    type_field_id, field_id, type_id
+  </sql>
+  <!-- 列表 -->
+  <select id="getList" resultMap="BaseResultMap" parameterType="Map">
+    select
+    <include refid="Base_Column_List" />
+    from sim_type_field
+    where 1=1
+    <if test="name != null and name != ''">
+		and name like concat(concat('%',#{name}),'%')
+	</if>
+  </select>
+</mapper>

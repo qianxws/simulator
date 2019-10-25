@@ -1,0 +1,114 @@
+<style>
+	#flow_file{
+		position:absolute;
+		top:0px;
+		opacity:0;
+		filter:alpha(opacity=0);
+		width: 78px;
+		height: 30px;
+	}
+	.modal-content{width:700px;}
+	#drop_area{
+		width: 640px;
+	    height: 280px;
+	    line-height: 280px;
+	    margin: auto;
+	    font-size: 16px;
+	    color: #333;
+	    position: absolute;
+	    top: 30px;
+	    left: 2%;
+	    text-align: center;
+	    border: 1px dashed #ccc;
+	    opacity: 0.5;
+	}
+	.img_div{width:100%;height:22px;margin-bottom:4px;}
+	.img_div div{text-overflow:ellipsis;word-break:break-all;white-space: nowrap;}
+	.img_div .img_info{float:left;min-width:50px;}
+	.img_div .img_name{
+		width:320px;word-break: break-all;text-overflow: ellipsis;overflow: hidden;padding-right: 20px;
+	}
+	.img_div .img_type{width:90px;text-align: center;}
+	.img_div .img_size{width:80px;text-align: right;}
+	.img_div .img_state{width:100px;text-align: center;}
+	.img_div .img_delete{width:45px;text-align: center;}
+	.img_div .img_delete i{cursor: pointer;}
+</style>
+<script>
+	//拖拽增加图片
+	$(function (){
+        if (window.applicationCache) {
+        	//alert("你的浏览器支持HTML5");
+			//阻止浏览器默认行为
+    		$(document).on({
+    			dragleave:function (e){
+    				e.preventDefault();
+    			},
+    			drop:function (e){
+    				e.preventDefault();
+    			},
+    			dragenter:function (e){
+    				e.preventDefault();
+    			},
+    			dragover:function (e){
+    				e.preventDefault();
+    			}
+    		});
+	    	var box = document.getElementById("img_area");
+			box.addEventListener("drop",function (e){
+				e.preventDefault();
+				var fileList = e.dataTransfer.files;
+				add_file(fileList);
+			},false);
+			curBrowser = "HTML5_attrs";
+	    } else {
+	//      alert("你的浏览器不支持HTML5");
+			$("#drop_area").hide();
+	    	curBrowser = "notHTML5_attrs";
+	    }
+	});
+</script>
+<div id="vmEdit" class="tabbable" >
+	<ul class="nav nav-tabs" id="myTab">
+		<li class="active">
+			<a data-toggle="tab" href="#home"> <i class="green ace-icon fa fa-pencil-square-o bigger-120"></i> 添加附件</a>
+		</li>
+	</ul>
+
+	<div class="tab-content">
+		<div id="home" class="tab-pane fade in active">
+			<div class="row">
+				<div class="col-xs-12">
+				 	<button class="btn btn-xs btn-info">
+                		<i class="ace-icon glyphicon glyphicon-plus bigger-100"></i>选择附件
+            		</button>
+            		<form class="form-horizontal" id="addrep" name="addrep" role="form" enctype="multipart/form-data" method="post">
+            			<input type="file" id="flow_file" name="flow_file" multiple="multiple" onchange="file_changeimg()"/>
+            		</form>
+				</div>
+			</div>
+			<!-- /.row -->
+			<div class="space-4"></div>
+			<div class="row">
+				<div class="col-xs-12" id="img_area">
+					<div style="width: 100%; min-height: 200px;">
+						<div class="img_div" style="border-bottom: 1px solid #BBDAEF;">
+							<div class="img_info img_name" style="text-align: center;">文件名称</div>
+							<div class="img_info img_type">文件类型</div>
+							<div class="img_info img_size">文件大小</div>
+							<div class="img_info img_state">文件状态</div>
+							<div class="img_info img_delete">操作</div>
+						</div>
+						<div id="img_list_div" style="height:280px;overflow-y: auto;">
+							
+						</div>
+						<div id="drop_area">
+							将文件拖拽到此区域
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<script type="text/javascript" src="js/ajaxfileupload.js"></script>

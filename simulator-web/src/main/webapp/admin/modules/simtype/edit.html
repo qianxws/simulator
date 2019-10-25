@@ -1,0 +1,15 @@
+<div id="vmEdit" :controller="vmEdit" class="tab-content">
+<div class="row">
+<form class=" col-sm-12 form-horizontal" id="editForm" role="form">
+	<div class="form-group">
+		<label class="col-sm-4 control-label no-padding-right" for="name"><strong class="str"> *</strong>名称：</label>
+		<div class="col-sm-7"><input  class="col-sm-10" type="text" name="name" :duplex="model.name" placeholder="名称" /></div>
+	</div>
+</form>
+</div>
+</div>
+<style>
+	.help-block{display: inline-block;}
+</style>
+<script src="modules/simtype/biz.js"></script>
+<script src="modules/simtype/edit.js"></script>

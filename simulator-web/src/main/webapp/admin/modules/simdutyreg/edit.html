@@ -1,0 +1,44 @@
+<div id="vmEdit" :controller="vmEdit" class="tab-content">
+<div class="row">
+<form class=" col-sm-12 form-horizontal" id="editForm" role="form">
+
+        <div class="form-group">
+    		<label class="col-sm-4 control-label no-padding-right" for="dutyTaskId"><strong class="str"> *</strong>dutyTaskId：</label>
+    		<div class="col-sm-7"><input  class="col-sm-10" type="text" name="dutyTaskId" :duplex="model.dutyTaskId" placeholder="dutyTaskId" /></div>
+    	</div>
+        <div class="form-group">
+    		<label class="col-sm-4 control-label no-padding-right" for="dutyContent"><strong class="str"> *</strong>dutyContent：</label>
+    		<div class="col-sm-7"><input  class="col-sm-10" type="text" name="dutyContent" :duplex="model.dutyContent" placeholder="dutyContent" /></div>
+    	</div>
+        <div class="form-group">
+    		<label class="col-sm-4 control-label no-padding-right" for="faultReg"><strong class="str"> *</strong>faultReg：</label>
+    		<div class="col-sm-7"><input  class="col-sm-10" type="text" name="faultReg" :duplex="model.faultReg" placeholder="faultReg" /></div>
+    	</div>
+        <div class="form-group">
+    		<label class="col-sm-4 control-label no-padding-right" for="repairReg"><strong class="str"> *</strong>repairReg：</label>
+    		<div class="col-sm-7"><input  class="col-sm-10" type="text" name="repairReg" :duplex="model.repairReg" placeholder="repairReg" /></div>
+    	</div>
+        <div class="form-group">
+    		<label class="col-sm-4 control-label no-padding-right" for="createTime"><strong class="str"> *</strong>createTime：</label>
+    		<div class="col-sm-7"><input  class="col-sm-10" type="text" name="createTime" :duplex="model.createTime" placeholder="createTime" /></div>
+    	</div>
+        <div class="form-group">
+    		<label class="col-sm-4 control-label no-padding-right" for="creator"><strong class="str"> *</strong>creator：</label>
+    		<div class="col-sm-7"><input  class="col-sm-10" type="text" name="creator" :duplex="model.creator" placeholder="creator" /></div>
+    	</div>
+        <div class="form-group">
+    		<label class="col-sm-4 control-label no-padding-right" for="updateTime"><strong class="str"> *</strong>updateTime：</label>
+    		<div class="col-sm-7"><input  class="col-sm-10" type="text" name="updateTime" :duplex="model.updateTime" placeholder="updateTime" /></div>
+    	</div>
+        <div class="form-group">
+    		<label class="col-sm-4 control-label no-padding-right" for="updator"><strong class="str"> *</strong>updator：</label>
+    		<div class="col-sm-7"><input  class="col-sm-10" type="text" name="updator" :duplex="model.updator" placeholder="updator" /></div>
+    	</div>
+</form>
+</div>
+</div>
+<style>
+	.help-block{display: inline-block;}
+</style>
+<script src="modules/simdutyreg/biz.js"></script>
+<script src="modules/simdutyreg/edit.js"></script>

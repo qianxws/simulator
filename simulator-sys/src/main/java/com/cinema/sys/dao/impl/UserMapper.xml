@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cinema.sys.dao.UserMapper">
+  <resultMap id="BaseResultMap" type="com.cinema.sys.model.User">
+    <id column="user_id" jdbcType="VARCHAR" property="id" />
+    <result column="orgid" jdbcType="VARCHAR" property="orgid" />
+    <result column="groupid" jdbcType="VARCHAR" property="groupid" />
+    <result column="company_id" jdbcType="VARCHAR" property="companyId" />
+    <result column="area_id" jdbcType="VARCHAR" property="areaId" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="sex" jdbcType="BIT" property="sex" />
+    <result column="enabled" jdbcType="DECIMAL" property="enabled" />
+    <result column="password" jdbcType="VARCHAR" property="password" />
+    <result column="tel" jdbcType="VARCHAR" property="tel" />
+    <result column="phone" jdbcType="VARCHAR" property="phone" />
+    <result column="qq" jdbcType="VARCHAR" property="qq" />
+    <result column="email" jdbcType="VARCHAR" property="email" />
+    <result column="createtime" jdbcType="TIMESTAMP" property="createtime" />
+    <result column="creator" jdbcType="VARCHAR" property="creator" />
+    <result column="updatetime" jdbcType="TIMESTAMP" property="updatetime" />
+    <result column="updator" jdbcType="VARCHAR" property="updator" />
+  </resultMap>
+  <sql id="table">
+  	sys_user
+  </sql>
+  <sql id="Base_Column_List">
+    user_id, name, sex, enabled, password, orgid, groupid, phone, email, createtime, creator,
+    company_id, area_id, tel, qq,updatetime, updator
+  </sql>
+  <select id="getDetail" parameterType="Map" resultMap="BaseResultMap">
+    select <include refid="Base_Column_List" />
+    from <include refid="table" />
+    where 1=1
+	<if test="id != null and id!=''">
+		and user_id = #{id}
+	</if>
+	<if test="password != null and password!=''">
+		and password = #{password}
+	</if>
+  </select>
+  <select id="getListByContact" resultMap="BaseResultMap">
+    select <include refid="Base_Column_List" />
+    from <include refid="table" />
+    where phone =#{phone} or tel =#{tel}
+  </select>
+  <select id="getList" parameterType="Map" resultMap="BaseResultMap">
+    select <include refid="Base_Column_List" />
+    from <include refid="table" />
+    where 1=1
+  	<if test="startTime != null and startTime != ''">
+  		and createtime >= #{startTime}
+  	</if>
+  	<if test="endTime != null and endTime != ''">
+  	<![CDATA[
+  		and createtime <= #{endTime}
+  	]]>
+  	</if>
+	<if test="name != null and name != ''">
+		and name like concat(concat('%',#{name}),'%')
+	</if>
+	<if test="id != null and id != ''">
+		and user_id like concat(concat('%',#{id}),'%')
+	</if>
+	<if test="enabled != null">
+		and enabled = #{enabled}
+	</if>
+	<if test="phone != null and phone != ''">
+		and phone = #{phone}
+	</if>
+	<if test="tel != null and tel != ''">
+		and tel = #{tel}
+	</if>
+	order by createtime desc
+  </select>
+  <select id="exist" resultType="Boolean">
+    select count(1) 
+    from <include refid="table" />
+    where user_id =#{id}
+  </select>
+
+</mapper>

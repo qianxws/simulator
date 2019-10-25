@@ -1,0 +1,348 @@
+<div id="vmEdit" class="tabbable">
+    <ul class="nav nav-tabs" id="myTab">
+        <li class="active">
+            <a data-toggle="tab" href="#home">
+                <i class="green ace-icon fa fa-pencil-square-o bigger-120"></i>
+                基本信息
+            </a>
+        </li>
+    </ul>
+
+    <div class="tab-content">
+        <div id="home" class="tab-pane fade in active">
+            <div class="row">
+                <div class="col-xs-12">
+                    <!-- PAGE CONTENT BEGINS -->
+                    <form class="form-horizontal" id="validation-form" role="form">
+
+                        <div class="form-group">
+                            <label class="col-sm-5 control-label no-padding-right" for="userId"> PKId：</label>
+
+                            <div class="col-sm-6">
+                                <div class="clearfix">
+                                    <input type="text" id="userId" name="userId" placeholder="Username" class="col-xs-5"
+                                           v-model="item.pkid"/>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-5 control-label no-padding-right" for="password"> 别称： </label>
+
+                            <div class="col-sm-6">
+                                <div class="clearfix">
+                                    <input type="password" id="password" name="password" placeholder="password"
+                                           class="col-xs-5" v-model="item.alias"/>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-5 control-label no-padding-right" for="username"> 登录用户： </label>
+
+                            <div class="col-sm-6">
+                                <div class="clearfix">
+                                    <input type="text" id="name" name="name" placeholder="Name" class="col-xs-5"
+                                           v-model="item.userId"/>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-5 control-label no-padding-right"> 方法：</label>
+
+                               <div class="col-sm-6">
+                                <div class="clearfix">
+                                    <input type="text" id="name" name="name" placeholder="Name" class="col-xs-5"
+                                           v-model="item.method"/>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-5 control-label no-padding-right" for="phone"> 登录参数：</label>
+
+                            <div class="col-sm-6">
+                                <div class="clearfix">
+                                    <input type="text" id="phone" name="phone" placeholder="Phone" class="col-xs-10"
+                                           v-model="item.reqParams"/>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-5 control-label no-padding-right" for="email"> 登录状态：</label>
+
+                            <div class="col-sm-6">
+                                <div class="clearfix">
+                                    <input type="text" id="email" name="email" placeholder="Email" class="col-xs-10"
+                                           v-model="item.rep"/>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-5 control-label no-padding-right" for="department"> 登录成功：</label>
+
+                            <div class="col-sm-6">
+                                <div class="clearfix">
+                                    <input type="text" id="department" name="department" placeholder="Department"
+                                           class="col-xs-10" v-model="item.success"/>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label no-padding-right"> IP地址： </label>
+
+                            <div class="col-xs-3">
+                                <label>
+                                    <input name="switch-field-1" class="ace ace-switch ace-switch-4" type="checkbox"
+                                           v-model="item.ip"/>
+                                    <span class="lbl" style="margin-top: 7px;"></span>
+                                </label>
+                            </div>
+
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label no-padding-right"> 登录时间： </label>
+
+                            <div class="col-xs-3">
+                                <label>
+                                    <input name="switch-field-1" class="ace ace-switch ace-switch-4" type="checkbox"
+                                           v-model="item.logTime"/>
+                                    <span class="lbl" style="margin-top: 7px;"></span>
+                                </label>
+                            </div>
+
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label no-padding-right"> 状态： </label>
+
+                            <div class="col-xs-3">
+                                <label>
+                                    <input name="switch-field-1" class="ace ace-switch ace-switch-4" type="checkbox"
+                                           v-model="item.enabled"/>
+                                    <span class="lbl" style="margin-top: 7px;"></span>
+                                </label>
+                            </div>
+
+                        </div>
+                        
+
+                    </form>
+
+                </div><!-- /.col -->
+            </div><!-- /.row -->
+        </div>
+        
+    </div>
+</div>
+<!-- CSS样式 -->
+<style>
+
+    .modal-dialog {
+        width: 768px;
+    }
+
+    .help-block {
+        display: inline-block;
+        margin-left: 8px;
+    }
+
+    .widget-body {
+        background-color: #FFF;
+        height: 320px;
+        overflow-y: scroll;
+    }
+
+</style>
+<!-- JS样式 -->
+<script>
+    $('#myTab a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
+        //if($(e.target).attr('href') == "#home") doSomethingNow();
+    });
+    var vmEdit = new Vue({
+        el: '#vmEdit',
+        data: {
+            item: {},
+            ajaxPramas: {},
+            editpassword : false
+        },
+        watch: { // 监听data
+            item: function (val) {
+                if (val.userId && val.userId != '') {
+                    this.fetchUserPrivs(val);
+                }
+            }
+        },
+        mounted: function () { // 初始化执行
+            var $this = this;
+
+            //console.log(param.id);
+            //console.log(param.name);
+//             this.fetchAllPrivs();
+
+
+            $('#validation-form').validate({
+                errorElement: 'div',
+                errorClass: 'help-block',
+                focusInvalid: true,
+                ignore: "",
+                rules: {
+                    userId: {required: true},
+                    password: {required: true},
+                    username: {required: true}
+                },
+                messages: {
+                	userId: {required: "用户ID不能为空"},
+                    password: {required: "密码不能为空"},
+                    username: {required: "用户姓名不能为空"}
+                },
+                highlight: function (e) {
+                    $(e).closest('.form-group').removeClass('has-info').addClass('has-error');
+                },
+                success: function (e) {
+                    $(e).closest('.form-group').removeClass('has-error');//.addClass('has-info');
+                    $(e).remove();
+                },
+                errorPlacement: function (error, element) {
+                    error.insertAfter(element);
+                }
+            });
+
+        },
+        methods: { // 方法
+            // 验证表单
+            valid: function () {
+                // refresh ajaxprams
+                this.updateAjaxPramas();
+
+                return $('#validation-form').valid();
+            },
+            // 获取全部岗位数据
+            fetchAllPrivs: function () {
+            	
+//             	 var $this = this;    	
+//             	var nodes = [{"id":"0","name":"岗位设置管理","pId":"-1","open":true,"isParent":true,"nocheck":true}]; 
+//             	var setting = {
+//                     	view:{
+// 							dblClickExpand:false,
+// 							showLine:false,
+// 							selectedMulti:false,
+// 							expandSpeed:400
+// 						},
+//                    		data: {
+//                    			simpleData:{
+//                    				enable: true,
+//                    				idkey: "id",
+//                    				pIdkey: "pId",
+//                    				rootPid: 0
+//                    			}
+//                    		},
+//                    		async: {
+//                    			enable: true,
+//                    			url: "/dev-manager/commMods/ajax?action=userAction&verb=getAllUsers",   // 根据pid查询对应值集合
+//                    			autoParam: ["id","pId"],
+//                    			otherParam: {"_":"o"},
+//                    			type:"post",
+//                    			dataFilter: null
+//                    		},
+//                    		callback:{
+//                    			onClick:reLoadOpenURL, //节点点击时
+//                    			onAsyncError:onAsyncError,//异步加载失败时
+//                    			beforeExpand:zTreeBeforeExpand, //捕捉父节点展开之前的事件，确定是否允许展开操作
+//                    			onAsyncSuccess:zTreeOnAsyncSuccess
+//                    		},
+//                    		check: {enable: true, chkboxType: {"Y": "ps", "N": "ps"}}
+//                     };
+                    
+//                     var treeObj = $.fn.zTree.init($("#tree"), setting, nodes);
+//                     setTimeout(function(){
+//                     	var node = treeObj.getNodeByParam("id", "0", null);
+//                     	reLoadOpenURL(null, "tree", node);
+//                     }, 10); 
+//                     setTimeout(function(){
+//                     	var node1 = treeObj.getNodeByParam("id", "1", null);
+//                         reLoadOpenURL(null, "tree", node1);
+//                     }, 100); 
+            },
+            
+            // 更新ajaxPramas
+            updateAjaxPramas: function () {
+
+                this.ajaxPramas = {
+                    dataItem: this.item
+                    //privileges: privileges
+                };
+            }
+        }
+    });
+    
+ // 如果是父节点不处理，是子节点打开对应的连接
+    function reLoadOpenURL(event, treeId, treeNode){
+//     	var zTree = $.fn.zTree.getZTreeObj(treeId);
+//     	if(treeNode.isParent) { // 如果是父节点
+//     		//zTree.reAsyncChildNodes(treeNode, "refresh", false); //异步刷新，清空后加载
+//     		// alert(treeNode.open);
+// 	    	if (treeNode.open) { // 父节点为展开状态, 折叠父节点
+// 	    		zTree.expandNode(treeNode, false, true, true, false);
+// 	    	} else { // 父节点是折叠的
+// 	    		if (treeNode.id!=1) {
+// 	    			zTreeBeforeExpand(treeId, treeNode);
+// 	    		} else {
+// 	    			zTree.expandNode(treeNode, true, false, true, false);
+// 	    		}
+// 	    	}
+// 	    	return false;
+//     	} else {// 不是父节点，打开对应连接
+//     		//alert("http:///xxxxxx");
+//     		return false;
+//     	}
+    }
+    
+    // 用于捕捉节点被展开之前的事件回调函数
+    function zTreeBeforeExpand(treeId, treeNode) {
+//     	var zTree = $.fn.zTree.getZTreeObj(treeId);
+//     	if (treeNode.isParent&&treeNode.id!=1) {
+//     		zTree.reAsyncChildNodes(treeNode, "refresh");
+//     		return false;
+//     	} else {
+//     		return true;
+//     	}
+    }
+    
+    // 用于捕捉节点被展开后的事件回调函数
+    function zTreeOnExpand(event, treeId, treeNode) {
+//     	alert(treeNode.tId+", "+treeNode.name);
+    }
+    
+    // 过滤方法
+    function filter(treeId,parentNode,childNodes){
+//     	if(!childNodes){
+//     		return null;
+//     	}
+//     	return childNodes;
+    }
+    
+    // 异步加载失败时
+    function onAsyncError(event, treeId, treeNode, XMlHttpRequest, textStatus, errorThrown) {
+//     	alert("加载失败！");
+    }
+    
+    var firstAsyncSuccessFlag = 0;
+    function zTreeOnAsyncSuccess(event, treeId, msg) {
+//     	var zTree = $.fn.zTree.getZTreeObj(treeId);
+//     	if (firstAsyncSuccessFlag == 0) {
+//     		try {
+//     			// 调用默认展开第一个节点
+//         		var selectedNode = zTree.getSelectedNodes();
+//         		var nodes = zTree.getNodes();
+//         		ztree.expandNode(nodes[0], true);
+//         		var childNodes = zTree.transformToArray(nodes[0]);
+//         		zTree.expandNode(childNodes[1], true);
+//         		zTree.selectNode(childNodes[1]);
+//         		var childNodes1 = zTree.transformToArray(childNodes[1]);
+//         		zTree.checkNode(childNodes1[1],true,true);
+//         		firstAsyncSuccessFlag = 1;
+//     		} catch (err) {
+    			
+//     		}
+//     	}
+    }
+</script>

@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cinema.common.dao.AlarmMapMapper">
+  <!-- 后台报警地图 -->
+  <resultMap id="BaseResultMap" type="com.cinema.common.model.MapItem">
+  <!-- 地图通用字段 -->
+    <result column="province_id" jdbcType="VARCHAR" property="provinceId" />
+    <result column="city_id" jdbcType="VARCHAR" property="cityId" />
+    <result column="cinema_id" jdbcType="VARCHAR" property="cinemaId" />
+    <result column="longitude" jdbcType="NUMERIC" property="longitude" />
+    <result column="latitude" jdbcType="NUMERIC" property="latitude" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="is_exception" jdbcType="NUMERIC" property="isException" />
+    <result column="exception_count" jdbcType="NUMERIC" property="exceptionCount" />
+    
+    <result column="report_peoples" jdbcType="NUMERIC" property="reportPeoples" />
+    <result column="ticket_office" jdbcType="NUMERIC" property="ticketOffice" />
+    <result column="ftfc_count" jdbcType="NUMERIC" property="ftfcCount" />
+    <result column="cinema_count" jdbcType="NUMERIC" property="cinemaCount" />
+    <result column="installed_count" jdbcType="NUMERIC" property="installedCount" />
+    <result column="halls" jdbcType="NUMERIC" property="halls" />
+    <result column="seats" jdbcType="NUMERIC" property="seats" />
+  </resultMap>
+  
+  <!--后台管理 获得全部省的地图数据 -->
+  <select id="getMapTitle"  resultMap="BaseResultMap">
+  	select count(ci.cinema_id) as cinema_count, count(hal.cinema_id) as exception_count, sum(ci.state) as installed_count  
+	from cinema ci left join(  
+	select cinema.cinema_id from realtime_alarm_log t,hall,cinema where cinema.cinema_id=hall.cinema_id and t.data_id=hall.hall_id and cinema.state=1   and alarm_time>current_date  
+	 union   
+	select cinema.cinema_id from realtime_alarm_log t,cinema where  t.data_id=cinema.cinema_id and cinema.state=1  and alarm_time>current_date) hal    
+	 on hal.cinema_id = ci.cinema_id  
+  </select>
+  
+   <!--后台管理 获得全部省的地图数据 -->
+  <select id="getProvinceData"   resultMap="BaseResultMap">
+    select pr.province_id, 
+	        max(pr.name) as name, 
+	        count(ci.cinema_id) as cinema_count,
+ 	        count(distinct hal.cinema_id) as exception_count, 
+ 	        sum(ftfc.ticket_office) as ticket_office, 
+	        sum(ci.state) as installed_count ,
+	        max(hal2.data_id) as exception
+	   from province pr 
+	   left join city c on pr.province_id = c.province_id 
+	   left join cinema ci on c.city_id = ci.city_id 
+	   left join hall on hall.cinema_id = ci.cinema_id
+	   left join realtime_ftfc ftfc on ftfc.hall_id=hall.hall_id
+ 	   left join 
+        ( 
+ 	       select distinct ci.cinema_id from cinema ci,hall h,realtime_alarm_log re 
+ 	        where ci.cinema_id=h.cinema_id and (re.data_id=h.hall_id or re.data_id = ci.cinema_id  and alarm_time>current_date) 
+ 	    ) hal 
+ 	    on hal.cinema_id = ci.cinema_id 
+ 	   left join 
+ 	     (
+ 	       select sum(ft.ticket_office) as ticket_office, h.cinema_id 
+ 	       from realtime_ftfc ft join hall h on ft.hall_id = h.hall_id 
+ 	       group by h.cinema_id
+ 	      ) ff 
+ 	     on ff.cinema_id = ci.cinema_id  
+	  left join (select distinct t2.data_id from realtime_alarm_log t2  where alarm_time>current_date) hal2
+	    on hal2.data_id = pr.province_id
+	  group by pr.province_id 
+  </select>
+  
+  
+  <!--后台管理 获得全部市的地图数据 -->
+  <select id="getCityData"   resultMap="BaseResultMap">
+	select c.city_id, 
+				  max(c.name) as name, 
+				  count(ht.cinema_id) as cinema_count, 
+				  sum(ci.state) as installed_count, 
+				  count(ht.cinema_id) as exception_count, 
+				  sum(ff.ticket_office) as ticket_office, 
+				  max(hal2.data_id) as exception 
+				from city c  
+				 join cinema ci 
+				    on c.city_id = ci.city_id 
+				  left join( select ci.cinema_id from cinema ci,hall h,realtime_alarm_log re where ci.cinema_id=h.cinema_id and re.data_id=h.hall_id and ci.state=1  and alarm_time>current_date 
+				    union  
+				    select ci.cinema_id from realtime_alarm_log t ,cinema ci where ci.cinema_id=t.data_id  and ci.state=1  
+				  ) ht on ht.cinema_id=ci.cinema_id  
+				  left join (select sum(ft.ticket_office) as ticket_office, h.cinema_id  
+				               from ftfc ft join hall h on ft.hall_id = h.hall_id  
+				              where ft.play_time > #{beforDate} 
+group by h.cinema_id) ff  
+				    on ff.cinema_id = ci.cinema_id  
+				  left join (select distinct t2.data_id from realtime_alarm_log t2 where  alarm_time>current_date) hal2  
+				    on hal2.data_id = c.city_id  
+				 where c.province_id = #{provinceId}  
+				 group by c.city_id 
+  </select>
+  
+  <!--后台管理 获得全部省的地图数据 -->
+  <select id="getCinemaData"   resultMap="BaseResultMap">
+  	select ci.name, 
+	       ci.longitude, 
+	       ci.latitude, 
+	       hal.cinema_id as exception, 
+	       ha.hallNum as halls, 
+	       ha.seatNum as seats, 
+	       ci.city_id, 
+	       c.province_id, 
+	       ci.cinema_id 
+	  from cinema ci 
+	  left join( 
+	       select distinct(ci.cinema_id) from cinema ci,hall h,realtime_alarm_log re where ci.cinema_id=h.cinema_id and h.hall_id=re.data_id and ci.state=1  and alarm_time>current_date
+	       union  
+	       select distinct(ci.cinema_id) from cinema ci , realtime_alarm_log re where ci.cinema_id=re.data_id and ci.state=1  and alarm_time>current_date
+	  )hal 
+	    on hal.cinema_id = ci.cinema_id 
+	  left join (select h.cinema_id, 
+	                    count(h.hall_id) as hallNum, 
+	                    sum(h.seats) as seatNum 
+	               from hall h 
+	              group by h.cinema_id) ha 
+	    on ha.cinema_id = ci.cinema_id 
+	  join city c 
+	    on c.city_id = ci.city_id 
+	 where ci.state = 1
+	 <if test="provinceId != null and provinceId != ''">
+  		and c.province_id =  #{provinceId}
+  	 </if>
+  </select>
+
+
+</mapper>

@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cinema.common.dao.DbConfigMapper">
+  <resultMap id="BaseResultMap" type="com.cinema.common.model.DbConfig">
+    <id column="dbconfig_id" jdbcType="VARCHAR" property="dbconfigId" />
+    <result column="data_source_id" jdbcType="VARCHAR" property="dataSourceId" />
+    <result column="driver" jdbcType="VARCHAR" property="driver" />
+    <result column="url" jdbcType="VARCHAR" property="url" />
+    <result column="username" jdbcType="VARCHAR" property="username" />
+    <result column="password" jdbcType="VARCHAR" property="password" />
+    <result column="initialsize" jdbcType="NUMERIC" property="initialsize" />
+    <result column="maxactive" jdbcType="NUMERIC" property="maxactive" />
+    <result column="maxwait" jdbcType="NUMERIC" property="maxwait" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    dbconfig_id, data_source_id, driver, url, username, password, initialsize, maxactive, 
+    maxwait
+  </sql>
+  
+  <select id="getAll" resultMap="BaseResultMap">
+  	select
+  	<include refid="Base_Column_List"/>
+  	from sys_db_config
+  </select>
+  
+  <select id="countDbConfig" resultType="int">
+  	select count(1)
+    from  sys_db_config
+  </select>
+  
+  <select id="getDetail" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from sys_db_config
+    where dbconfig_id  = #{dbconfigId}
+  </select>
+  <!-- 分页查询 -->
+  <select id="getList" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from  sys_db_config
+    where 1=1
+  	
+	<if test="paraMap.data_source_id != null and paraMap.data_source_id != ''">
+		and data_source_id like concat(concat('%',#{paraMap.data_source_id}),'%')
+	</if>
+	order by driver desc
+  </select>
+  
+  <select id="getTotal" resultType="int">
+    select count(1)
+    from  sys_db_config
+    where 1=1
+  	<if test="paraMap.data_source_id != null and paraMap.data_source_id != ''">
+		and data_source_id like concat(concat('%',#{paraMap.data_source_id}),'%')
+	</if>
+  </select>
+  
+  
+   
+</mapper>

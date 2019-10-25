@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cinema.sys.dao.AreaMapper">
+  <resultMap id="BaseResultMap" type="com.cinema.sys.model.Area">
+    <id column="area_id" jdbcType="VARCHAR" property="id" />
+    <result column="nid" jdbcType="INTEGER" property="nid" />
+    <result column="parent_id" jdbcType="VARCHAR" property="parentId" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="longitude" jdbcType="DECIMAL" property="longitude" />
+    <result column="latitude" jdbcType="DECIMAL" property="latitude" />
+    
+    <result column="province_id" jdbcType="VARCHAR" property="provinceId" />
+    <result column="province_nid" jdbcType="INTEGER" property="provinceNid" />
+    <result column="province_name" jdbcType="VARCHAR" property="provinceName" />
+    <result column="city_id" jdbcType="VARCHAR" property="cityId" />
+    <result column="city_nid" jdbcType="INTEGER" property="cityNid" />
+    <result column="city_name" jdbcType="VARCHAR" property="cityName" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    area_id, nid, parent_id, name, longitude, latitude
+  </sql>
+  <select id="getDetail" parameterType="String" resultMap="BaseResultMap">
+    select <include refid="Base_Column_List" />
+	 from sys_area
+	   where area_id=#{id}
+  </select>
+  <select id="getList" parameterType="Map" resultMap="BaseResultMap">
+    select 
+       <include refid="Base_Column_List" />
+	 from sys_area
+	   where parent_id!='0'
+	<if test="id != null">
+	   and area_id=#{id}
+	</if>
+	 order by area_id
+  </select>
+  <select id="getAllProvinces" resultMap="BaseResultMap">
+    select area_id,nid,name
+     from sys_area where parent_id='0'
+	 order by area_id
+  </select>
+  <select id="getProvinceOptions" parameterType="String" resultMap="BaseResultMap">
+    select area_id,name
+     from sys_area
+     where parent_id='0'
+	<if test="provinceIds != null and provinceIds != ''">
+	   and #{provinceIds} like concat(concat('%',area_id),',%')
+	</if>
+	 order by area_id
+  </select>
+  <select id="getCityOptions" parameterType="Map" resultMap="BaseResultMap">
+    select area_id,name
+     from sys_area
+    where length(area_id)=6
+	<if test="parentId != null">
+	   and parent_id=#{parentId}
+	</if>
+	<if test="cityIds != null and cityIds != ''">
+	   and #{cityIds} like concat(concat('%',area_id),',%')
+	</if>
+	 order by area_id
+  </select>
+  <select id="getProvinceName"  resultType="String">
+    select name  from sys_area
+	 where parent_id='0' and area_id = #{id}
+  </select>
+  <select id="getProvinceId"  resultType="String">
+    select area_id  from sys_area
+	 where parent_id='0' and #{provinceName} like concat(name,'%')
+  </select>
+  <select id="getCityId"  resultType="String">
+    select area_id  from sys_area
+    where length(area_id)=6 and name like concat(#{cityName},'%')
+  </select>
+  <select id="getAreaIdByNid"  resultType="String">
+  	select area_id  from sys_area
+	where nid=#{nid}
+  </select>
+</mapper>

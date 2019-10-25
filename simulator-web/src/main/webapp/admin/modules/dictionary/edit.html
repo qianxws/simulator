@@ -1,0 +1,43 @@
+<div id="vmEdit" class="tab-content">
+	<div class="row">
+		<div class="col-xs-12">
+			<form class="form-horizontal" id="validation-form" role="form">
+				<div>
+					<div class="form-group">
+						<label class="col-sm-4 control-label no-padding-right" for="name"><strong class="str">*</strong> 字典/类别名称：</label>
+						<div class="col-sm-6">
+							<div class="clearfix">
+								<input type="text"  name="name" v-model="item.name" placeholder="名称" class="col-sm-8"/>
+							</div>
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-sm-4 control-label no-padding-right" for="note"><strong class="str">*</strong> 描述：</label>
+						<div class="col-sm-6">
+							<div class="clearfix">						
+						      <textarea  rows="5" cols="21" placeholder="描述在150字以内"  id="item.note"  name="note" v-model="item.note"  maxlength="150" ></textarea>					
+							</div>
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-sm-4 control-label no-padding-right" for="parentId"><strong class="str">*</strong> 上级节点：</label>					
+						 <div class="col-sm-6">
+                        	<select class="col-xs-6" id="parentId" name="parentId"  >
+                        	</select>
+                        </div>					
+					</div>                  		   					
+					 <div class="form-group">
+						<label class="col-sm-4 control-label no-padding-right"><strong class="str">*</strong>状态： </label>
+						<div class="col-sm-6" id="jqu-enabled" style="margin-top: 7px;">
+							<input type="radio" name="state" class="state-true" checked="checked" value="1" > 
+							<label for="enabled"> 正常</label> 
+							<input type="radio" name="state" class="state-false" value="0"  > 
+							<label for="unenabled"> 禁用 </label>
+						</div>
+					</div>
+				</div>
+			</form>
+		</div>
+	</div>
+</div>
+<script src="modules/dictionary/edit.js"></script>

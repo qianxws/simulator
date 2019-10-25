@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cinema.sys.dao.MenuMapper">
+  <resultMap id="BaseResultMap" type="com.cinema.sys.model.Menu">
+    <id column="menuid" jdbcType="VARCHAR" property="menuid" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="code" jdbcType="VARCHAR" property="code" />
+    <result column="pid" jdbcType="VARCHAR" property="pid" />
+    <result column="cseq" jdbcType="NUMERIC" property="cseq" />
+    <result column="url" jdbcType="VARCHAR" property="url" />
+    <result column="enabled" jdbcType="NUMERIC" property="enabled" />
+    <result column="isopen" jdbcType="NUMERIC" property="isopen" />
+    <result column="createtime" jdbcType="TIMESTAMP" property="createtime" />
+    <result column="creator" jdbcType="VARCHAR" property="creator" />
+    <result column="updatetime" jdbcType="TIMESTAMP" property="updatetime" />
+    <result column="updator" jdbcType="VARCHAR" property="updator" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    t.menuid, t.name, t.code, t.pid, t.cseq, t.url, t.enabled, t.isopen, t.createtime, t.creator, t.updatetime, 
+    t.updator
+  </sql>
+  <select id="getDetail" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from sys_menu t
+    where menuid = #{menuid}
+  </select>
+  <select id="getListByAuth" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from sys_menu t
+     where menuid != '0' 
+    <choose> 
+         <when test="authLevel=='isDefault' or authLevel==null or authLevel==''">  
+		     and t.enabled=1 and code is not null
+			 and ( #{authCodes} like concat(concat('%,',code),',%'))
+         </when > 
+         <when test="authLevel=='isSupAdmin'">  
+	    	 and t.enabled=1 and code is not null
+			 and ( #{authCodes} like concat(concat('%,',code),',%')) 
+         </when >  
+         <when test="authLevel=='isRoot'">  
+         </when > 
+         <otherwise>  
+         </otherwise>  
+     </choose>  
+	order by t.pid asc, t.cseq asc
+  </select>
+  <select id="getAllMenus" resultType="java.util.List"  resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from sys_menu t order by t.pid asc, t.cseq asc
+  </select>
+  <select id="getMenuByid"   resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from sys_menu t
+    where t.menuid = #{id} 
+  </select>
+  <select id="getMenuBypid" resultType="java.util.List"  resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from sys_menu t
+    where t.pid = #{pid} order by t.cseq asc
+  </select>
+
+  <select id="getTopList" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from sys_menu t
+    where pid = '0' and menuid != '0' order by cseq asc
+  </select>
+  
+  <select id="getChildList" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from sys_menu t
+    where pid = #{pid} order by cseq asc
+  </select>
+  <select id="getMaxCseq" resultType="java.lang.Integer">
+    select max(t.cseq) from sys_menu t where t.pid =#{pid}
+  </select>
+  <select id="exist" resultType="Boolean">
+	   select count(1) from sys_menu where menuid!=#{menuid}  and name =#{name}
+  </select>
+  
+</mapper>

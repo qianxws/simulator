@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cinema.sys.dao.SiteMapper">
+  <resultMap id="BaseResultMap" type="com.cinema.sys.model.Site">
+    <id column="site_id" jdbcType="VARCHAR" property="id" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="title" jdbcType="VARCHAR" property="title" />
+    <result column="keywords" jdbcType="VARCHAR" property="keywords" />
+    <result column="description" jdbcType="VARCHAR" property="description" />
+    <result column="record" jdbcType="VARCHAR" property="record" />
+    <result column="copyright" jdbcType="VARCHAR" property="copyright" />
+    <result column="company" jdbcType="VARCHAR" property="company" />
+    <result column="default_area_nid" jdbcType="INTEGER" property="defaultAreaNid" />
+    <result column="is_token" jdbcType="BIT" property="isToken" />
+    <result column="upload_path" jdbcType="VARCHAR" property="uploadPath" />
+    <result column="ftp_enabled" jdbcType="BIT" property="ftpEnabled" />
+    <result column="ftp_host" jdbcType="VARCHAR" property="ftpHost" />
+    <result column="ftp_user" jdbcType="VARCHAR" property="ftpUser" />
+    <result column="ftp_password" jdbcType="VARCHAR" property="ftpPassword" />
+    <result column="ftp_port" jdbcType="INTEGER" property="ftpPort" />
+    <result column="ftp_path" jdbcType="VARCHAR" property="ftpPath" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    site_id, name, title, keywords, description, record, copyright, company, default_area_nid, 
+    is_token, upload_path,ftp_enabled, ftp_host, ftp_user, ftp_password, ftp_port, ftp_path
+  </sql>
+  <select id="getList" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from sys_site
+  </select>
+</mapper>

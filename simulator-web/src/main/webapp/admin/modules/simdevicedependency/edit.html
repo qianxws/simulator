@@ -1,0 +1,40 @@
+<div id="vmEdit" :controller="vmEdit" class="tab-content" xmlns:ms-bind="http://www.w3.org/1999/xhtml">
+<div class="row">
+<form class=" col-sm-12 form-horizontal" id="editForm" role="form">
+
+        <div class="form-group">
+    		<label class="col-sm-4 control-label no-padding-right" for="sysName"><strong class="str"> *</strong>系统名称：</label>
+    		<div class="col-sm-7"><input readonly class="col-sm-10" type="text" name="sysName" :duplex="model.sysName" placeholder="系统名称" /></div>
+    	</div>
+        <div class="form-group">
+    		<label class="col-sm-4 control-label no-padding-right" for="subSysName"><strong class="str"> *</strong>分系统名称：</label>
+    		<div class="col-sm-7"><input readonly class="col-sm-10" type="text" name="subSysName"  :duplex="model.subSysName" placeholder="分系统名称" /></div>
+    	</div>
+		<div class="form-group">
+			<label class="col-sm-4 control-label no-padding-right" for="productName"><strong class="str"> *</strong>产品名称：</label>
+			<div class="col-sm-7"><input readonly class="col-sm-10" type="text" name="productName" :duplex="model.productName" placeholder="产品名称" /></div>
+		</div>
+		<div class="form-group">
+			<label class="col-sm-4 control-label no-padding-right" for="code"><strong class="str"> *</strong>设备编号：</label>
+			<div class="col-sm-7"><input readonly class="col-sm-10" type="text" name="code" :duplex="model.code" placeholder="设备编号" /></div>
+		</div>
+		<div class="form-group">
+			<label class="col-sm-4 control-label no-padding-right" for="dependencyId"><strong class="str"> *</strong>依赖关系：</label>
+			<!--<div class="col-sm-7"><input  class="col-sm-10" type="text" name="dependencyName" :duplex="model.dependencyName" placeholder="依赖关系" /></div>-->
+			<div class="form-group">
+				<div class="clearfix" >
+					<select style="width:250px;" name="dependencyId"  :duplex="model.dependencyId">
+						<option value="">-全部-</option>
+						<option :for="item in @dependencys"  ms-attr="{value:item.dependencyId}" ms-bind:value="{value:item.dependencyId}" >{{item.name}}</option>
+					</select>
+				</div>
+			</div>
+		</div>
+</form>
+</div>
+</div>
+<style>
+	.help-block{display: inline-block;}
+</style>
+<script src="modules/simdevicedependency/biz.js"></script>
+<script src="modules/simdevicedependency/edit.js"></script>

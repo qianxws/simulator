@@ -1,0 +1,49 @@
+/*切换风格样式设置*/
+.selectbox{
+	margin-top: 12px;
+}
+.selectbox div{
+	float:left;
+}
+.selectbox .select-bar{
+	padding: 0 14px;
+}
+.selectbox .select-bar select{
+	width:200px; 
+	height:250px; 
+	border:1px #D5D5D5 solid; 
+	padding:4px; 
+	font-family:"microsoft yahei";
+}
+.btn-bar p{
+	margin-top: 16px;
+}
+.select-btn{
+	width: 50px;
+	text-align: center;
+}
+
+.searchClass{
+	margin-left: 15px;
+	padding-left: 0px; 
+	cursor:pointer;
+	text-decoration: none;
+	height: 24px;
+	color:#333;
+}
+.searchInput{
+	width: 152px;
+	height: 26px;
+	line-height:26px;
+	padding-top:0px !important; 
+	padding-bottom:2px !important; 
+	margin-left:-1px;
+}
+.searchBut{
+	margin-left: 10px;
+	cursor:pointer;
+	text-decoration: none;
+	width: 76px;
+	height: 24px; 
+	color:#333;
+}

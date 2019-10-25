@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cinema.biz.dao.SimDependencySetMapper">
+  <resultMap id="BaseResultMap" type="com.cinema.biz.model.SimDependencySet">
+     <id column="device_id" jdbcType="VARCHAR" property="deviceId" />
+    <result column="simulator_id" jdbcType="VARCHAR" property="simulatorId" />
+    <result column="type_id" jdbcType="VARCHAR" property="typeId" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="code" jdbcType="VARCHAR" property="code" />
+    <result column="dependency_name" jdbcType="VARCHAR" property="dependencyName" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    t.device_id, t.simulator_id, t.type_id, t.name, t.code,d.name as dependency_name
+  </sql>
+  <!-- 列表 -->
+  <select id="getList" resultMap="BaseResultMap" parameterType="Map">
+    select
+    <include refid="Base_Column_List" />
+    from sim_device t,sim_dependency d
+    where 1=1
+	<if test="simulatorId != null and simulatorId != ''">
+		and simulator_id like concat(#{simulatorId},'%')
+	</if>
+    <if test="name != null and name != ''">
+		and name like concat(concat('%',#{name}),'%')
+	</if>
+	
+	order by create_time desc
+  </select>
+   <select id="getDetail" parameterType="Map" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from sim_device
+    where 1=1
+	<if test="deviceId != null and deviceId != ''">
+		and device_id=#{deviceId}
+	</if>
+  </select>
+</mapper>

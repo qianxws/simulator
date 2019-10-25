@@ -1,0 +1,40 @@
+<div id="vmModule">
+    <div class="fileUpload">
+        <fieldset style="box-sizing: border-box; border: 1px solid rgb(192, 192, 192); margin: 0px 2px; padding: 0.35em 0.625em 0.75em;">
+            <legend style="box-sizing: border-box; color: inherit; display: table; max-width: 100%; padding: 0px; white-space: normal;">
+                <br class="Apple-interchange-newline" />
+               	 数据导入
+            </legend>
+            <div id="film" class="row" style="margin-top:10px;">
+                <div style="float:left;width:120px;"><span style="float:right;">影片信息：&nbsp;</span></div>
+                <div style="float:left;width:320px;" id="file-1-div">
+                	<input name="excelFile" type="file" id="file-1" onchange="importBiz.checkFileType(this, 'f1-error')"/>
+                </div>
+                <div class="btn btn-info btn-xs" style="margin-left:40px;" onclick="importUtil.execImport('file-1','dataImport','uploadFilm')">导入</div>
+            </div>
+			<div class="row">
+           		<div id="f1-error" class="col-sm-offset-1 col-sm-8" style="color:#a94442;max-height: 200px;overflow: auto;"></div>
+           	</div>
+            <div id="data" class="row" style="margin-top:40px;">
+                <div style="float:left;width:120px;"><span style="float:right;">统计数据：&nbsp;</span></div>
+                <div style="float:left;width:320px;" id="file-2-div">
+                	<input name="excelFile" type="file" id="file-2" onchange="importBiz.checkFileType(this, 'f2-error')"/>
+                </div>
+                <div class="btn btn-info btn-xs" style="margin-left:40px;"  onclick="importUtil.execImport('file-2','dataImport','uploadFTFC')">导入</div>
+            </div>
+			<div class="row">
+           		<div id="f2-error" class="col-sm-offset-1 col-sm-8" style="color:#a94442;max-height: 200px;overflow: auto;"></div>
+           	</div>
+        </fieldset>
+    </div>
+</div>
+<script type="text/javascript"src="assets/js/ace.js"></script>
+<script type="text/javascript"src="assets/js/elements.fileinput.js"></script>
+<script type="text/javascript" src="js/ajaxfileupload.js"></script>
+<script src="modules/dataimport/importBiz.js"></script>
+<script src="js/utils/importUtil.js"></script>
+
+<style>
+	#file-upload{display:none;}
+	.bootstrap-dialog-message{overflow:auto;}
+</style>

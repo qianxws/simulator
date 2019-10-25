@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cinema.common.dao.LayoutMapper">
+  <resultMap id="BaseResultMap" type="com.cinema.common.model.Layout">
+    <id column="layout_id" jdbcType="VARCHAR" property="layoutId" />
+    <result column="user_id" jdbcType="VARCHAR" property="userId" />
+    <result column="page" jdbcType="VARCHAR" property="page" />
+    <result column="id" jdbcType="VARCHAR" property="id" />
+    <result column="title" jdbcType="VARCHAR" property="title" />
+    <result column="url" jdbcType="VARCHAR" property="url" />
+    <result column="div_id" jdbcType="VARCHAR" property="divId" />
+    <result column="position" jdbcType="VARCHAR" property="position" />
+    <result column="method" jdbcType="VARCHAR" property="method" />
+    <result column="show" jdbcType="NUMERIC" property="show" />
+    <result column="cseq" jdbcType="NUMERIC" property="cseq" />
+    <result column="row_num" jdbcType="NUMERIC" property="rowNum" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    layout_id, user_id, page, id, title, url, div_id, position, method, show, cseq, row_num
+  </sql>
+  <select id="getDetail" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from sys_layout
+    where layout_id = #{layoutId}
+  </select>
+  
+  <select id="getList" resultMap="BaseResultMap">
+  	select 
+  	<include refid="Base_Column_List"/>
+  	from sys_layout where user_id = #{userId} and page = #{page} order by row_num, cseq
+  </select>
+  
+  
+  <delete id="deleteByUserId" >
+    delete from sys_layout
+    where user_id = #{userId}  and page =#{page}
+  </delete>
+
+</mapper>

@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cinema.sys.dao.RoleHallMapper">
+  <resultMap id="BaseResultMap" type="com.cinema.sys.model.RoleHall">
+    <id column="ref_id" jdbcType="VARCHAR" property="refId" />
+    <result column="cinema_id" jdbcType="VARCHAR" property="cinemaId" />
+    <result column="province_id" jdbcType="VARCHAR" property="provinceId" />
+    <result column="city_id" jdbcType="VARCHAR" property="cityId" />
+    <result column="role_id" jdbcType="VARCHAR" property="roleId" />
+    <result column="hall_id" jdbcType="VARCHAR" property="hallId" />
+    <result column="hall_num" jdbcType="NUMERIC" property="hallNum" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    ref_id, cinema_id, province_id, city_id, role_id, hall_id
+  </sql>
+  <select id="getDetail" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from sys_role_hall
+    where ref_id = #{refId}
+  </select>
+
+  
+  <select id="getAllList" resultMap="BaseResultMap">
+<!-- 获得省列表 -->
+  	<if test="level== null">
+select distinct p.province_id as id, p.name, rhr.role_id 
+					from test_province p left join sys_role_hall rhr on 
+						    rhr.province_id = p.province_id and rhr.role_id = #{roleId} 
+					   join test_city c on p.province_id = c.province_id 
+					   join test_cinema ci on c.city_id = ci.city_id 
+					where ci.state = 1 
+					order by p.province_id 
+  	</if>
+<!-- 获得省下的所有市-->
+  	<if test="level== 0">
+select distinct c.city_id as id, c.name, rhr.role_id  
+					from test_city c left join sys_role_hall rhr 
+						    on rhr.city_id = c.city_id and rhr.role_id = #{roleId} 
+						    join test_cinema ci on c.city_id = ci.city_id 
+						where c.province_id = #{id} and ci.state = 1  
+						order by c.city_id
+  	</if>
+<!-- 获得市下所有影院-->
+  	<if test="level== 1">
+select distinct ci.cinema_id as id, ci.name, rhr.role_id 
+						from test_cinema ci left join sys_role_hall rhr 
+						    on rhr.cinema_id = ci.cinema_id and rhr.role_id = #{roleId} 
+						where ci.city_id = #{id} and ci.state = 1  
+						order by ci.cinema_id
+  	</if>
+<!-- 获得影院下所有影厅-->
+  	<if test="level== 2">
+select distinct h.hall_id as id, h.name, rhr.role_id, h.hall_num 
+						from test_hall h left join sys_role_hall rhr 
+						    on h.hall_id = rhr.hall_id and rhr.role_id = #{roleId}  
+						where h.cinema_id = #{id} 
+						order by h.hall_num
+  	</if>
+  </select>
+
+</mapper>

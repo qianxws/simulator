@@ -1,0 +1,20 @@
+@charset "UTF-8";
+.left_btn{background:url(../images/21.png) no-repeat;width:25px;height:29px;border:none;background-size:contain;}
+.left_btn:hover{background:url(../images/h-21.png) no-repeat;width:25px;height:29px;border:none;background-size:contain;}
+.right_btn{background:url(../images/12.png) no-repeat;width:25px;height:29px;border:none;background-size:contain;}
+.right_btn:hover{background:url(../images/h-12.png) no-repeat;width:25px;height:29px;border:none;background-size: contain;}
+.li-st { background: #f7f7f4; padding: 5px; border-radius: 2px;margin-right: 6px;}
+.li-s { display: inline-block; background: #f7f7f4; padding: 5px; margin-right: 5px; border-radius: 3px;}
+.correct-td{padding:6px;}
+.correct-td input{width:60px;height:22px;border:none;background:none;}
+.correct-td input:hover{border-bottom:1px solid #999;}
+#ticket-list tr{cursor:pointer;}
+#ticket-list .checked{background:#74a8c5;}
+.my-dialog{position:fixed;width: 100%;height: 100%;background:rgba(240,240,240,.4)}
+.p-t{padding-top: 5px; margin: 0px; color: #517cbf;}	
+.list li {list-style: none; padding-left: 0;}
+
+.steps li{width:38px;float:left;cursor: pointer;}
+.steps li:before{display:none;}
+.steps>li .step{font-size: 12px; width: 39px; height: 41px;}
+.bootstrap-dialog-close-button{display:block !important}

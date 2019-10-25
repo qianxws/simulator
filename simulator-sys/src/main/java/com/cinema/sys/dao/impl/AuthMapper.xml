@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cinema.sys.dao.AuthMapper">
+  <resultMap id="BaseResultMap" type="com.cinema.sys.model.Auth">
+    <id column="auth_id" jdbcType="VARCHAR" property="authId" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="code" jdbcType="VARCHAR" property="code" />
+    <result column="parent_id" jdbcType="VARCHAR" property="parentId" />
+    <result column="state" jdbcType="NUMERIC" property="state" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="creator" jdbcType="VARCHAR" property="creator" />
+    <result column="description" jdbcType="VARCHAR" property="description" />
+    <result column="is_root" jdbcType="BIT" property="isRoot" />
+    <result column="is_default" jdbcType="BIT" property="isDefault" />
+    
+    <result column="role_id" jdbcType="VARCHAR" property="roleId" />
+  </resultMap>
+  <sql id="table">
+    sys_auth
+  </sql>
+  <sql id="Base_Column_List">
+    auth_id, name, code, parent_id, state, create_time, creator, description,is_root,is_default
+  </sql>
+  <select id="getDetail" parameterType="String" resultMap="BaseResultMap">
+    select <include refid="Base_Column_List" />
+    from <include refid="table" />
+    where auth_id = #{authId}
+  </select>
+  <select id="getList" parameterType="Map" resultMap="BaseResultMap">
+  	select 
+    <include refid="Base_Column_List" />
+    from sys_auth
+    where auth_id != '0'
+    <if test="parentId !=null and parentId !=''">
+      and parent_id = #{parentId}
+    </if>
+    <if test="name != null and name != ''">
+	    and (name like concat(concat('%',#{name}),'%'))
+	</if>
+	<if test="code != null and code != ''">
+	    and (code like concat(concat('%',#{code}),'%'))
+	</if>
+	<if test="state != null and state != ''">
+	    and state =#{state}
+	</if>
+  </select>
+  <select id="getAllList" resultMap="BaseResultMap">
+  	<!--第一次加载所有一级菜单  -->
+  	<if test="level == -1">
+		select 
+			a .auth_id as "auth_id",
+			a .name as "name",
+			ra.role_id as "role_id",
+			a.create_time as "create_time"
+		from
+			sys_auth a
+		left join sys_role_auth ra on a .auth_id = ra.auth_id
+		and ra.role_id = #{roleId}
+		where a.auth_id!='0' and a.parent_id='0'
+		order by a.create_time desc
+	</if>
+		<!--根据pid查询 -->
+	<if test="level != -1">
+		select 
+			a .auth_id as "auth_id",
+			a .name as "name",
+			ra.role_id as "role_id",
+			a.create_time as "create_time"
+		from
+			sys_auth a
+		left join sys_role_auth ra on a .auth_id = ra.auth_id
+		and ra.role_id = #{roleId} 
+		where a.auth_id!='0' and a.parent_id=#{id}
+		order by a.create_time desc
+	</if>
+  </select>
+  <select id="hasChildAuth" resultType="java.lang.Integer">
+	select count(*) from sys_auth where parent_id =#{id}
+  </select>
+  <select id="exist" resultType="Boolean">
+    select count(1) from sys_auth 
+    where name =#{name}
+    <if test="authId != null">
+		and auth_id!=#{authId}
+	</if>
+  </select>
+
+  <!-- 查询权限 -->
+  <select id="getNameById" resultType="java.lang.String">
+  	 select name as "name"
+	 from sys_auth
+	 where auth_id = #{authId}
+  </select>
+
+  
+  <!-- 查询非根节点的所有权限 -->
+  <select id="getAuthTree" resultMap="BaseResultMap">
+	   select 
+			a .auth_id,
+			a.parent_id,
+			a .name,
+			ra.role_id,
+			a.create_time
+		from
+			sys_auth a
+		left join sys_role_auth ra on a .auth_id = ra.auth_id
+		and ra.role_id = #{roleId}
+  </select>
+  <select id="getSubIds" resultType="String">
+    select auth_id from sys_auth 
+    where auth_id in(
+		select auth_id from sys_auth where parent_id=#{parentId}
+		  or parent_id in(select auth_id from sys_auth where parent_id=#{parentId})
+    )
+  </select>
+</mapper>

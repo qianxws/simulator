@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cinema.common.dao.ChartMapper">
+
+ <!-- 根据时间获取票房趋势 -->
+  <select id="getLineChart"  resultType="java.util.LinkedHashMap">
+   select to_char(f.play_time,'yyyy-MM-dd') as playtime, 
+		 sum(f.report_peoples) as reportpeoples
+		 , sum(f.verify_peoples) as verifypeoples 
+		 from test_ftfc f where f.is_audit = 1
+	group by to_char(f.play_time,'yyyy-MM-dd') 
+	order by to_char(f.play_time,'yyyy-MM-dd')
+  </select>
+
+ <!-- 根据时间获取票房趋势 -->
+  <select id="findBoxOfficeLine" resultType="java.util.LinkedHashMap">
+   select to_char(f.play_time,'yyyy-MM-dd') as playtime,sum(f.ticket_office)/10000 as ticketoffice
+   from ftfc f
+   where 1=1
+  	<if test="paraMap.startTime != null and paraMap.startTime != ''">
+  		and f.play_time >= #{paraMap.startTime}
+  	</if>
+  	<if test="paraMap.endTime != null and paraMap.endTime != ''">
+  	<![CDATA[
+  		and f.play_time <= #{paraMap.endTime}
+  	]]>
+  	</if>
+   group by to_char(f.play_time,'yyyy-MM-dd')
+   order by to_char(f.play_time,'yyyy-MM-dd')
+  </select>
+  
+
+  
+ <!-- 影院排行条形图 -->
+  <select id="getCinemaRank" resultType="java.util.LinkedHashMap">
+   SELECT CI.name as cinema, SUM(FT.TICKET_OFFICE) as ticketoffice, 
+		 case when sum(FT.VERIFY_PEOPLES)*sum(FT.REPORT_PEOPLES) is null or sum(FT.VERIFY_PEOPLES) * sum(FT.REPORT_PEOPLES) = 0  then 0  
+		      else ROUND(ABS(SUM(FT.VERIFY_PEOPLES) - SUM(FT.REPORT_PEOPLES)) * 100 / SUM(FT.REPORT_PEOPLES),2)
+		  end as peopleratio 
+		 FROM ftfc FT JOIN hall HA ON FT.HALL_ID = HA.HALL_ID 
+		 JOIN cinema CI ON HA.CINEMA_ID = CI.CINEMA_ID
+		 WHERE FT.IS_AUDIT = 1
+  	<if test="paraMap.startTime != null and paraMap.startTime != ''">
+  		and FT.play_time >= #{paraMap.startTime}
+  	</if>
+  	<if test="paraMap.endTime != null and paraMap.endTime != ''">
+  	<![CDATA[
+  		and FT.play_time <= #{paraMap.endTime}
+  	]]>
+  	</if>
+		  GROUP BY CI.CINEMA_ID, CI.NAME ORDER BY  
+		 case when sum(FT.VERIFY_PEOPLES)*sum(FT.REPORT_PEOPLES) is null or sum(FT.VERIFY_PEOPLES) * sum(FT.REPORT_PEOPLES) = 0  then 0 
+		 else ROUND(ABS(SUM(FT.VERIFY_PEOPLES) - SUM(FT.REPORT_PEOPLES)) * 100 / SUM(FT.REPORT_PEOPLES),3) end desc
+  </select>
+  
+ <!-- 影片排行条形图 -->
+  <select id="getFilmRank" resultType="java.util.LinkedHashMap">
+     SELECT  F.name as name, SUM(FT.TICKET_OFFICE) as ticketoffice,  
+				case when sum(FT.VERIFY_PEOPLES)*sum(FT.REPORT_PEOPLES) is null or sum(FT.VERIFY_PEOPLES) * sum(FT.REPORT_PEOPLES) = 0  then 0 
+				  else round(ABS(SUM(FT.VERIFY_PEOPLES) - SUM(FT.REPORT_PEOPLES)) * 100 / SUM(FT.REPORT_PEOPLES),2) 
+				 end  as peopleratio
+		FROM ftfc FT JOIN film F ON FT.FILM_ID = F.FILM_ID  
+                   JOIN hall HA ON FT.HALL_ID = HA.HALL_ID 
+                   JOIN cinema CI ON HA.CINEMA_ID = CI.CINEMA_ID 
+		WHERE FT.IS_AUDIT = 1
+  	<if test="paraMap.startTime != null and paraMap.startTime != ''">
+  		and FT.play_time >= #{paraMap.startTime}
+  	</if>
+  	<if test="paraMap.endTime != null and paraMap.endTime != ''">
+  	<![CDATA[
+  		and FT.play_time <= #{paraMap.endTime}
+  	]]>
+  	</if>
+     GROUP BY F.FILM_ID, F.NAME ORDER BY   
+				case when sum(FT.VERIFY_PEOPLES)*sum(FT.REPORT_PEOPLES) is null or sum(FT.VERIFY_PEOPLES) * sum(FT.REPORT_PEOPLES) = 0  then 0  
+				 else  ABS(SUM(FT.VERIFY_PEOPLES) - SUM(FT.REPORT_PEOPLES)) * 100 / SUM(FT.REPORT_PEOPLES) end desc
+  </select>
+  
+  	<!-- 查询七天票房 -->
+	<select id="chartSevenOffice" resultType="java.util.LinkedHashMap">
+		select sum(t.ticket_office)/10000 as ticketoffice, to_char(t.play_time,'yyyy-mm-dd') as name
+				from ftfc t 
+				join hall h on h.hall_id = t.hall_id  
+				where t.play_time >= #{time} and t.is_audit = 1 
+				group by to_char(t.play_time,'yyyy-mm-dd') 
+				order by to_char(t.play_time,'yyyy-mm-dd')
+	</select>
+	
+	<!-- 影片票房前十 -->
+	<select id="chartFilmOffice" resultType="java.util.LinkedHashMap">
+		select sum(t.ticket_office)/10000 as ticketoffice , max(f.name) as name
+		from ftfc t ,film f 
+		where t.film_id=f.film_id and t.is_audit = 1 
+		group by t.film_id 
+		order by ticketoffice desc 
+	</select>
+	
+	<!-- 影院票房前十 -->
+	<select id="chartCinemaOffice" resultType="java.util.LinkedHashMap">
+		select max( cinema.name) as name,sum(t.ticket_office)/10000 as ticketoffice 
+		from ftfc t,hall,cinema 
+		where hall.hall_id = t.hall_id and hall.cinema_id=cinema.cinema_id
+		 and t.is_audit = 1 
+		group by cinema.cinema_id 
+		order by ticketoffice desc
+	</select>
+	
+	<!-- 院线票房前十 -->
+	<select id="chartCompanyOffice" resultType="java.util.LinkedHashMap" >
+		select  max(company.name) as name,sum(t.ticket_office)/10000 as ticketoffice
+		from ftfc t,hall,cinema,company
+		where hall.hall_id = t.hall_id and cinema.cinema_id = hall.cinema_id and  cinema.company_id=company.company_id
+          and t.is_audit = 1 
+		group by company.company_id 
+		order by ticketoffice desc
+	</select>
+	
+	<!-- 影片昨日票房前十 -->
+	<select id="chartYesterdayFilmOffice" resultType="java.util.LinkedHashMap">
+		select sum(t.ticket_office)/10000 as ticketoffice , max(f.name) as name
+		from ftfc t ,film f 
+		where t.film_id=f.film_id and t.is_audit = 1  
+          and to_char(t.play_time,'yyyy-mm-dd') = to_char(CURRENT_DATE - 1,'yyyy-mm-dd')
+		group by t.film_id 
+		order by ticketoffice desc 
+	</select>
+	
+	<!-- 影院昨日票房前十 -->
+	<select id="chartYesterdayCinemaOffice" resultType="java.util.LinkedHashMap">
+		select max( cinema.name) as name,sum(t.ticket_office)/10000 as ticketoffice 
+		from ftfc t,hall,cinema 
+		where hall.hall_id = t.hall_id and hall.cinema_id=cinema.cinema_id
+		 and t.is_audit = 1 
+		 and to_char(t.play_time,'yyyy-mm-dd') = to_char(CURRENT_DATE - 1,'yyyy-mm-dd')
+		group by cinema.cinema_id 
+		order by ticketoffice desc
+	</select>
+	
+	<!-- 院线昨日票房前十 -->
+	<select id="chartYesterdayCompanyOffice" resultType="java.util.LinkedHashMap">
+		select  max(company.name) as name,sum(t.ticket_office)/10000 as ticketoffice
+		from ftfc t,hall,cinema,company
+		where hall.hall_id = t.hall_id and cinema.cinema_id = hall.cinema_id and  cinema.company_id=company.company_id
+          and t.is_audit = 1 
+          and to_char(t.play_time,'yyyy-mm-dd')  = to_char(CURRENT_DATE - 1,'yyyy-mm-dd')
+		group by company.company_id 
+		order by ticketoffice desc
+	</select>
+  
+</mapper>

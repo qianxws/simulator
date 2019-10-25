@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cinema.biz.dao.SimRepairMapper">
+  <resultMap id="BaseResultMap" type="com.cinema.biz.model.SimRepair">
+    <id column="repair_id" jdbcType="VARCHAR" property="repairId" />
+    <result column="fault_id" jdbcType="VARCHAR" property="faultId" />
+    <result column="repair_desc" jdbcType="VARCHAR" property="repairDesc" />
+    <result column="repair_time" jdbcType="TIMESTAMP" property="repairTime" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="creator" jdbcType="VARCHAR" property="creator" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="updator" jdbcType="VARCHAR" property="updator" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    t.repair_id, t.fault_id, t.repair_desc, t.repair_time, t.create_time, t.creator, t.update_time, t.updator
+  </sql>
+  <!-- 列表 -->
+  <select id="getList" resultMap="BaseResultMap" parameterType="Map">
+    select
+    <include refid="Base_Column_List" />
+    from sim_repair t,sim_fault f,sim_device dev,sim_simulator sim
+    where t.fault_id=f.fault_id and  f.device_id=dev.device_id and dev.simulator_id=sim.simulator_id
+	<if test="simulatorId != null and simulatorId != ''">
+		and sim.simulator_id like concat(#{simulatorId},'%')
+	</if>
+    <if test="name != null and name != ''">
+		and t.name like concat(concat('%',#{name}),'%')
+	</if>
+	
+	order by t.create_time desc
+  </select>
+</mapper>

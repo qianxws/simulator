@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cinema.biz.dao.SimDeviceDependencyMapper">
+    <resultMap id="BaseResultMap" type="com.cinema.biz.model.SimDeviceDependency">
+        <id column="simulator_id" jdbcType="VARCHAR" property="simulatorId"/>
+        <result column="code" jdbcType="VARCHAR" property="code"/>
+        <result column="dependency_name" jdbcType="VARCHAR" property="dependencyName"/>
+        <result column="product_name" jdbcType="VARCHAR" property="productName"/>
+        <result column="sys_name" jdbcType="VARCHAR" property="sysName"/>
+        <result column="subsys_name" jdbcType="VARCHAR" property="subSysName"/>
+        <result column="dependency_id" jdbcType="VARCHAR" property="dependencyId"/>
+        <result column="device_dependency_id" jdbcType="VARCHAR" property="deviceDependencyId"/>
+        <result column="device_id" jdbcType="VARCHAR" property="deviceId"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        sys.`name` AS sys_name,
+        sonsys. NAME AS subsys_name,
+        pro. NAME AS product_name,
+        dep. NAME AS dependency_name,
+        dev. CODE AS CODE,
+        dep.dependency_id AS dependency_id,
+        t.device_dependency_id AS device_dependency_id,
+        t.device_id AS device_id
+    </sql>
+    <select id="getList" resultMap="BaseResultMap" parameterType="Map">
+        select
+        <include refid="Base_Column_List"/>
+        FROM
+        sim_device_dependency t
+        LEFT JOIN
+        sim_device dev on t.device_id = dev.device_id
+        LEFT JOIN
+        sim_dependency dep on t.dependency_id = dep.dependency_id
+        LEFT JOIN
+        sim_simulator pro on dev.simulator_id = pro.simulator_id
+        LEFT JOIN
+        sim_simulator sonsys on pro.parent_id = sonsys.simulator_id
+        LEFT JOIN
+        sim_simulator sys on sonsys.parent_id = sys.simulator_id
+
+        <if test="code != null and code != ''">
+            and dev.code like concat(concat('%',#{code}),'%')
+        </if>
+
+        <if test="dependencyId != null and dependencyId != ''">
+            and t.dependency_id = #{dependencyId}
+        </if>
+
+    </select>
+    <select id="getDetail" parameterType="Map" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        FROM
+        sim_device_dependency t,
+        sim_device dev,
+        sim_dependency dep,
+        sim_simulator pro,
+        sim_simulator sonsys,
+        sim_simulator sys
+        WHERE
+        t.device_id = dev.device_id
+        AND t.dependency_id = dep.dependency_id
+        AND dev.simulator_id = pro.simulator_id
+        AND pro.parent_id = sonsys.simulator_id
+        AND sonsys.parent_id = sys.simulator_id
+        <if test="deviceDependencyId != null and deviceDependencyId != ''">
+            and t.device_dependency_id=#{deviceDependencyId}
+        </if>
+    </select>
+</mapper>

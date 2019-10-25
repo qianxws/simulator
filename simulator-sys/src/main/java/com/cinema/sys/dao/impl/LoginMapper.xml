@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cinema.sys.dao.LoginMapper">
+  <select id="getLoginAuths" parameterType="Map" resultType="String">
+    select t.code  as "code"
+    from sys_auth t
+  	<if test="authLevel=='isRoot'">
+  	</if>
+  	<if test="authLevel=='isSupAdmin'">
+  	   where  t.is_root is null or t.is_root !=1
+  	</if>
+  	<if test="authLevel=='isDefault'">
+  	   where t.is_default =1
+  	</if>
+  	<if test="authLevel==null or authLevel==''">
+		,sys_role_auth ra, sys_user_role ur
+		where ra.role_id = ur.role_id and t.auth_id = ra.auth_id and ur.user_id = #{userId}
+  	</if>  	
+  </select>
+</mapper>

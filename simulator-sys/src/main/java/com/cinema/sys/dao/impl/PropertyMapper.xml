@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cinema.sys.dao.PropertyMapper">
+  
+  <resultMap id="BaseResultMap" type="com.cinema.sys.model.Property">
+    <id column="id" jdbcType="VARCHAR" property="id" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="creator" jdbcType="VARCHAR" property="creator" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+  </resultMap>
+  
+  <sql id="Base_Column_List">
+    t.${paraMap.type}_id as id,t.name,t.creator,t.create_time,u.name as creatorName
+  </sql>
+  
+  <delete id="delete" statementType="STATEMENT">
+    delete from ${type}
+    where ${type}_id = '${id}'
+  </delete>
+  <insert id="insert" statementType="STATEMENT">
+    insert into ${type} (${type}_id, name, creator, 
+      create_time)
+    values ('${id}', '${name}', '${creator}', 
+      '${createTime}')
+  </insert>
+  <update id="update" statementType="STATEMENT">
+    update ${type}
+    set name = '${name}',
+      creator = '${creator}',
+      create_time = '${createTime}'
+    where ${type}_id = '${id}'
+  </update>
+  
+  <!-- 影院状态属性 -->
+  <select id="getAllList" resultMap="BaseResultMap"  statementType="STATEMENT">
+    select ${type}_id as id, name from ${type} t
+  </select>
+  
+  
+   <!-- 设备属性 -->
+  <select id="getDeviceProperties" resultMap="BaseResultMap"  statementType="STATEMENT">
+    select ${type}_id as id, name from ${type} t
+  </select>
+  
+  <!-- 分页查询 -->
+  <select id="getList" resultMap="BaseResultMap"  statementType="STATEMENT">
+	 select 
+	 <include refid="Base_Column_List" />
+	   from ${paraMap.type} t,sys_user u
+	 where t.creator=u.userid
+	  <if test="paraMap.name != null and paraMap.name != ''">
+		 and t.name like '%${paraMap.name}%'
+	  </if>
+	  <if test="paraMap.startTime != null and paraMap.startTime != ''">
+  		 and t.create_time >= '${paraMap.startTime}'
+  	  </if>
+  	  <if test="paraMap.endTime != null and paraMap.endTime != ''">
+  	  <![CDATA[
+  		 and t.create_time <= '${paraMap.endTime}'
+  	  ]]>
+  	  </if>
+	  order by t.create_time desc
+	  limit ${paraMap.rows} offset (${paraMap.page}-1)*${paraMap.rows} 
+    </select>
+    <!-- 查询总条数 -->
+   <select id="getTotal" resultType="int"  statementType="STATEMENT">
+	 select count(1) 
+	  from ${paraMap.type} t,sys_user u
+	 where t.creator=u.userid
+	  <if test="paraMap.name != null and paraMap.name != ''">
+		 and t.name like '%${paraMap.name}%'
+	  </if>
+	  <if test="paraMap.startTime != null and paraMap.startTime != ''">
+  		 and t.create_time >= '${paraMap.startTime}'
+  	  </if>
+  	  <if test="paraMap.endTime != null and paraMap.endTime != ''">
+  	  <![CDATA[
+  		 and t.create_time <= '${paraMap.endTime}'
+  	  ]]>
+  	  </if>
+  </select>
+  
+  <select id="isNotExist" resultType="java.lang.Boolean"  statementType="STATEMENT">
+	  select ${type}_id='${id}'
+	   from ${type} where name ='${name}'
+  </select>
+  
+</mapper>

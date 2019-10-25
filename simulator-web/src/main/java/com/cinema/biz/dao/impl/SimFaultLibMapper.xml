@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cinema.biz.dao.SimFaultLibMapper">
+  <resultMap id="BaseResultMap" type="com.cinema.biz.model.SimFaultLib">
+    <id column="fault_lib_id" jdbcType="VARCHAR" property="faultLibId" />
+    <result column="type_id" jdbcType="VARCHAR" property="typeId" />
+    <result column="device_name" jdbcType="VARCHAR" property="deviceName" />
+    <result column="fault_name" jdbcType="VARCHAR" property="faultName" />
+    <result column="fault_content" jdbcType="VARCHAR" property="faultContent" />
+    <result column="fault_plan" jdbcType="VARCHAR" property="faultPlan" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="creator" jdbcType="VARCHAR" property="creator" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="updator" jdbcType="VARCHAR" property="updator" />
+    
+    <result column="name" jdbcType="VARCHAR" property="name" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    fault_lib_id, type_id, device_name, fault_name, fault_content, fault_plan, create_time, 
+    creator, update_time, updator
+  </sql>
+  <select id="getList" resultMap="BaseResultMap" parameterType="Map">
+    select t.name,l.fault_lib_id, l.type_id, l.device_name, l.fault_name, l.fault_content,
+    	 l.fault_plan, l.create_time,l.creator, l.update_time, l.updator 
+		 from sim_fault_lib l join sim_type t
+	where l.type_id=t.type_id
+    <if test="typeId != null and typeId != ''">
+		and l.type_id =#{typeId}
+	</if>
+	<if test="deviceName != null and deviceName != ''">
+		and l.device_name like concat(concat('%',#{deviceName}),'%')
+	</if>
+	<if test="faultName != null and faultName != ''">
+		and l.fault_name like concat(concat('%',#{faultName}),'%')
+	</if>
+	<if test="faultContent != null and faultContent != ''">
+		and l.fault_content like concat(concat('%',#{faultContent}),'%')
+	</if>
+  </select>
+   <select id="getDetail" parameterType="Map" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from sim_fault_lib
+    where 1=1
+	<if test="faultLibId != null and faultLibId != ''">
+		and type_id=#{faultLibId}
+	</if>
+  </select>
+</mapper>

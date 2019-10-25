@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cinema.biz.dao.SimTypeMapper">
+  <resultMap id="BaseResultMap" type="com.cinema.biz.model.SimType">
+    <id column="type_id" jdbcType="VARCHAR" property="typeId" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="cseq" jdbcType="INTEGER" property="cseq" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="creator" jdbcType="VARCHAR" property="creator" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="updator" jdbcType="VARCHAR" property="updator" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    type_id, name, cseq, create_time, creator, update_time, updator
+  </sql>
+  <!-- 列表 -->
+  <select id="getList" resultMap="BaseResultMap" parameterType="Map">
+    select 
+    <include refid="Base_Column_List" />
+    from sim_type
+    where 1=1
+    <if test="name != null and name != ''">
+		and name like concat(concat('%',#{name}),'%')
+	</if>
+	order by create_time desc
+  </select>
+  <select id="getDetail" parameterType="Map" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from sim_type
+    where 1=1
+	<if test="typeId != null and typeId != ''">
+		and type_id=#{typeId}
+	</if>
+  </select>
+</mapper>

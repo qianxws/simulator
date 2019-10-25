@@ -1,0 +1,128 @@
+<div id="vmEdit" :controller="vmEdit" class="tab-content">
+<div class="row">
+<form class=" col-sm-12 form-horizontal" id="editForm" role="form">
+
+        <div class="form-group">
+    		<label class="col-sm-4 control-label no-padding-right" for="simulatorId"><strong class="str"> *</strong>simulatorId：</label>
+    		<div class="col-sm-7"><input  class="col-sm-10" type="text" name="simulatorId" :duplex="model.simulatorId" placeholder="simulatorId" /></div>
+    	</div>
+        <div class="form-group">
+    		<label class="col-sm-4 control-label no-padding-right" for="typeId"><strong class="str"> *</strong>typeId：</label>
+    		<div class="col-sm-7"><input  class="col-sm-10" type="text" name="typeId" :duplex="model.typeId" placeholder="typeId" /></div>
+    	</div>
+        <div class="form-group">
+    		<label class="col-sm-4 control-label no-padding-right" for="name"><strong class="str"> *</strong>name：</label>
+    		<div class="col-sm-7"><input  class="col-sm-10" type="text" name="name" :duplex="model.name" placeholder="name" /></div>
+    	</div>
+        <div class="form-group">
+    		<label class="col-sm-4 control-label no-padding-right" for="code"><strong class="str"> *</strong>code：</label>
+    		<div class="col-sm-7"><input  class="col-sm-10" type="text" name="code" :duplex="model.code" placeholder="code" /></div>
+    	</div>
+        <div class="form-group">
+    		<label class="col-sm-4 control-label no-padding-right" for="enablingTime"><strong class="str"> *</strong>enablingTime：</label>
+    		<div class="col-sm-7"><input  class="col-sm-10" type="text" name="enablingTime" :duplex="model.enablingTime" placeholder="enablingTime" /></div>
+    	</div>
+        <div class="form-group">
+    		<label class="col-sm-4 control-label no-padding-right" for="location"><strong class="str"> *</strong>location：</label>
+    		<div class="col-sm-7"><input  class="col-sm-10" type="text" name="location" :duplex="model.location" placeholder="location" /></div>
+    	</div>
+        <div class="form-group">
+    		<label class="col-sm-4 control-label no-padding-right" for="pc"><strong class="str"> *</strong>pc：</label>
+    		<div class="col-sm-7"><input  class="col-sm-10" type="text" name="pc" :duplex="model.pc" placeholder="pc" /></div>
+    	</div>
+        <div class="form-group">
+    		<label class="col-sm-4 control-label no-padding-right" for="ip"><strong class="str"> *</strong>ip：</label>
+    		<div class="col-sm-7"><input  class="col-sm-10" type="text" name="ip" :duplex="model.ip" placeholder="ip" /></div>
+    	</div>
+        <div class="form-group">
+    		<label class="col-sm-4 control-label no-padding-right" for="mac"><strong class="str"> *</strong>mac：</label>
+    		<div class="col-sm-7"><input  class="col-sm-10" type="text" name="mac" :duplex="model.mac" placeholder="mac" /></div>
+    	</div>
+        <div class="form-group">
+    		<label class="col-sm-4 control-label no-padding-right" for="delayStartTime"><strong class="str"> *</strong>delayStartTime：</label>
+    		<div class="col-sm-7"><input  class="col-sm-10" type="text" name="delayStartTime" :duplex="model.delayStartTime" placeholder="delayStartTime" /></div>
+    	</div>
+        <div class="form-group">
+    		<label class="col-sm-4 control-label no-padding-right" for="operateTimes"><strong class="str"> *</strong>operateTimes：</label>
+    		<div class="col-sm-7"><input  class="col-sm-10" type="text" name="operateTimes" :duplex="model.operateTimes" placeholder="operateTimes" /></div>
+    	</div>
+        <div class="form-group">
+    		<label class="col-sm-4 control-label no-padding-right" for="faultTimes"><strong class="str"> *</strong>faultTimes：</label>
+    		<div class="col-sm-7"><input  class="col-sm-10" type="text" name="faultTimes" :duplex="model.faultTimes" placeholder="faultTimes" /></div>
+    	</div>
+        <div class="form-group">
+    		<label class="col-sm-4 control-label no-padding-right" for="repairTimes"><strong class="str"> *</strong>repairTimes：</label>
+    		<div class="col-sm-7"><input  class="col-sm-10" type="text" name="repairTimes" :duplex="model.repairTimes" placeholder="repairTimes" /></div>
+    	</div>
+        <div class="form-group">
+    		<label class="col-sm-4 control-label no-padding-right" for="maintenanceTimes"><strong class="str"> *</strong>maintenanceTimes：</label>
+    		<div class="col-sm-7"><input  class="col-sm-10" type="text" name="maintenanceTimes" :duplex="model.maintenanceTimes" placeholder="maintenanceTimes" /></div>
+    	</div>
+        <div class="form-group">
+    		<label class="col-sm-4 control-label no-padding-right" for="duration"><strong class="str"> *</strong>duration：</label>
+    		<div class="col-sm-7"><input  class="col-sm-10" type="text" name="duration" :duplex="model.duration" placeholder="duration" /></div>
+    	</div>
+        <div class="form-group">
+    		<label class="col-sm-4 control-label no-padding-right" for="operate"><strong class="str"> *</strong>operate：</label>
+    		<div class="col-sm-7"><input  class="col-sm-10" type="text" name="operate" :duplex="model.operate" placeholder="operate" /></div>
+    	</div>
+        <div class="form-group">
+    		<label class="col-sm-4 control-label no-padding-right" for="operateTime"><strong class="str"> *</strong>operateTime：</label>
+    		<div class="col-sm-7"><input  class="col-sm-10" type="text" name="operateTime" :duplex="model.operateTime" placeholder="operateTime" /></div>
+    	</div>
+        <div class="form-group">
+    		<label class="col-sm-4 control-label no-padding-right" for="isStart"><strong class="str"> *</strong>isStart：</label>
+    		<div class="col-sm-7"><input  class="col-sm-10" type="text" name="isStart" :duplex="model.isStart" placeholder="isStart" /></div>
+    	</div>
+        <div class="form-group">
+    		<label class="col-sm-4 control-label no-padding-right" for="cpuRate"><strong class="str"> *</strong>cpuRate：</label>
+    		<div class="col-sm-7"><input  class="col-sm-10" type="text" name="cpuRate" :duplex="model.cpuRate" placeholder="cpuRate" /></div>
+    	</div>
+        <div class="form-group">
+    		<label class="col-sm-4 control-label no-padding-right" for="ramRate"><strong class="str"> *</strong>ramRate：</label>
+    		<div class="col-sm-7"><input  class="col-sm-10" type="text" name="ramRate" :duplex="model.ramRate" placeholder="ramRate" /></div>
+    	</div>
+        <div class="form-group">
+    		<label class="col-sm-4 control-label no-padding-right" for="startTime"><strong class="str"> *</strong>startTime：</label>
+    		<div class="col-sm-7"><input  class="col-sm-10" type="text" name="startTime" :duplex="model.startTime" placeholder="startTime" /></div>
+    	</div>
+        <div class="form-group">
+    		<label class="col-sm-4 control-label no-padding-right" for="endTime"><strong class="str"> *</strong>endTime：</label>
+    		<div class="col-sm-7"><input  class="col-sm-10" type="text" name="endTime" :duplex="model.endTime" placeholder="endTime" /></div>
+    	</div>
+        <div class="form-group">
+    		<label class="col-sm-4 control-label no-padding-right" for="discRate"><strong class="str"> *</strong>discRate：</label>
+    		<div class="col-sm-7"><input  class="col-sm-10" type="text" name="discRate" :duplex="model.discRate" placeholder="discRate" /></div>
+    	</div>
+        <div class="form-group">
+    		<label class="col-sm-4 control-label no-padding-right" for="temp"><strong class="str"> *</strong>temp：</label>
+    		<div class="col-sm-7"><input  class="col-sm-10" type="text" name="temp" :duplex="model.temp" placeholder="temp" /></div>
+    	</div>
+        <div class="form-group">
+    		<label class="col-sm-4 control-label no-padding-right" for="extendAttr"><strong class="str"> *</strong>extendAttr：</label>
+    		<div class="col-sm-7"><input  class="col-sm-10" type="text" name="extendAttr" :duplex="model.extendAttr" placeholder="extendAttr" /></div>
+    	</div>
+        <div class="form-group">
+    		<label class="col-sm-4 control-label no-padding-right" for="createTime"><strong class="str"> *</strong>createTime：</label>
+    		<div class="col-sm-7"><input  class="col-sm-10" type="text" name="createTime" :duplex="model.createTime" placeholder="createTime" /></div>
+    	</div>
+        <div class="form-group">
+    		<label class="col-sm-4 control-label no-padding-right" for="creator"><strong class="str"> *</strong>creator：</label>
+    		<div class="col-sm-7"><input  class="col-sm-10" type="text" name="creator" :duplex="model.creator" placeholder="creator" /></div>
+    	</div>
+        <div class="form-group">
+    		<label class="col-sm-4 control-label no-padding-right" for="updateTime"><strong class="str"> *</strong>updateTime：</label>
+    		<div class="col-sm-7"><input  class="col-sm-10" type="text" name="updateTime" :duplex="model.updateTime" placeholder="updateTime" /></div>
+    	</div>
+        <div class="form-group">
+    		<label class="col-sm-4 control-label no-padding-right" for="updator"><strong class="str"> *</strong>updator：</label>
+    		<div class="col-sm-7"><input  class="col-sm-10" type="text" name="updator" :duplex="model.updator" placeholder="updator" /></div>
+    	</div>
+</form>
+</div>
+</div>
+<style>
+	.help-block{display: inline-block;}
+</style>
+<script src="modules/simpccontrol/biz.js"></script>
+<script src="modules/simpccontrol/edit.js"></script>

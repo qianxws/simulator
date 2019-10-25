@@ -1,0 +1,62 @@
+<div id="vmEdit" :controller="vmEdit" class="tab-content">
+<div class="row">
+<form class=" col-sm-12 form-horizontal" id="editForm" role="form">
+	<div class="form-group">
+		<label class="col-sm-4 control-label no-padding-right" for="name"><strong class="str"> *</strong>公司名称：</label>
+		<div class="col-sm-7"><input  class="col-sm-10" type="text" name="name" :duplex="model.name" placeholder="公司名称" /></div>
+	</div>
+	<div class="form-group">
+		<label class="col-sm-4 control-label no-padding-right" for="domain"><strong class="str"> *</strong> 域名：</label>
+		<div class="col-sm-7"><input  class="col-sm-10" type="text" name="domain" :duplex="model.domain" placeholder="域名"/></div>
+	</div>
+	<div class="form-group">
+		<label class="col-sm-4 control-label no-padding-right" for="contactName"><strong class="str"> *</strong> 联系人：</label>
+		<div class="col-sm-7"><input  class="col-sm-10"  type="text" name="contactName" :duplex="model.contactName" placeholder="联系人"/></div>
+	</div>
+	<div class="form-group">
+		<label class="col-sm-4 control-label no-padding-right" for="phone"><strong class="str"> *</strong> 手机：</label>
+		<div class="col-sm-7"><input  class="col-sm-10"  type="text" name="phone" :duplex="model.phone" placeholder="手机"/></div>
+	</div>
+	<div class="form-group">
+		<label class="col-sm-4 control-label no-padding-right" for="qq"><strong class="str"> *</strong> QQ：</label>
+		<div class="col-sm-7"><input  class="col-sm-10"  type="text" name="qq" :duplex="model.qq" placeholder="QQ"/></div>
+	</div>
+	<div class="form-group">
+		<label class="col-sm-4 control-label no-padding-right" for="provinceId"><strong class="str"> *</strong> 城市：</label>
+		<div class="col-sm-3">
+			<select class="col-sm-11" :duplex="model.provinceId" name="provinceId" data-duplex-changed="onProvinceChanged()">
+				<option value="">-请选择省-</option>
+				<option :for="el in options.provinceId" :attr="{value:el.id}">{{el.name}}</option>
+			</select>
+		</div>
+		<div class="col-sm-3">
+			<select class="col-sm-11" :duplex="model.cityId" name="cityId">
+				<option value="">-请选择市-</option>
+				<option :for="el in options.cityId" :attr="{value:el.id}">{{el.name}}</option>
+			</select>
+		</div>
+	</div>
+	<div class="form-group">
+		<label class="col-sm-4 control-label no-padding-right" for="address"><strong class="str"> *</strong> 地址：</label>
+		<div class="col-sm-7"><input  class="col-sm-10"  type="text" name="address" :duplex="model.address" placeholder="地址"/></div>
+	</div>
+	<div class="form-group">
+		<label class="col-sm-4 control-label no-padding-right" for="mainProducts"><strong class="str"> *</strong> 主营产品：</label>
+		<div class="col-sm-7"><input  class="col-sm-10"  type="text" name="mainProducts" :duplex="model.mainProducts" placeholder="主营产品"/></div>
+	</div>
+	<div class="form-group"  :visible="typeof model.id!='undefined'">
+		<label class="col-sm-4 control-label no-padding-right" for="createTime"><strong class="str"> *</strong> 创建时间：</label>
+		<div class="col-sm-7"><input  class="col-sm-10"  type="text" name="createTime" id="createTime" :duplex='model.createTime| date("yyyy-MM-dd")' placeholder="创建时间"  onclick="vmEditDateUtil.datePicker('createTime','yyyy-MM-dd')"/></div>
+	</div>
+	<div class="form-group">
+		<label class="col-sm-4 control-label no-padding-right" for="introduce"><strong class="str"> *</strong> 公司简介：</label>
+		<div class="col-sm-7"><textarea  class="col-sm-10" rows="6" name="introduce" :duplex="model.introduce" placeholder="公司简介"></textarea></div>
+	</div>
+</form>
+</div>
+</div>
+<style>
+	.help-block{display: inline-block;}
+</style>
+<script src="modules/company/biz.js"></script>
+<script src="modules/company/edit.js"></script>

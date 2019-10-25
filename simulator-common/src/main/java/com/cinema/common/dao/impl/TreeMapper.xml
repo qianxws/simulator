@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cinema.common.dao.TreeMapper">
+  <resultMap id="BaseResultMap" type="com.cinema.sys.model.TreeNode">
+	  <result column="id" jdbcType="VARCHAR" property="id" />
+	  <result column="parent_id" jdbcType="VARCHAR" property="parentId" />
+	  <result column="name" jdbcType="VARCHAR" property="name" />
+  </resultMap>
+  <select id="getSimulatorTree" resultMap="BaseResultMap">
+	select simulator_id as id,parent_id, name
+	    from sim_simulator
+	where 1=1
+  	<if test="simulatorId != null and simulatorId != ''">
+	  and parent_id =#{simulatorId}
+  	</if>
+	    order by cseq
+  </select>
+  <select id="getTypeTree" resultMap="BaseResultMap">
+	select type_id as id, 0 as parent_id, name
+	    from sim_type
+	where 1=1
+	    order by cseq
+  </select>
+</mapper>

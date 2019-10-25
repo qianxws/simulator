@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xsi:schemaLocation="  
+           http://www.springframework.org/schema/beans  
+           http://www.springframework.org/schema/beans/spring-beans-3.0.xsd  
+           http://www.springframework.org/schema/aop  
+           http://www.springframework.org/schema/aop/spring-aop-3.0.xsd
+           http://www.springframework.org/schema/context  
+           http://www.springframework.org/schema/context/spring-context-3.0.xsd
+           http://www.springframework.org/schema/mvc/spring-mvc-4.0.xsd">
+     
+     <!-- 引入jdbc配置文件 -->  
+     <bean id="propertyConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+        <property name="locations">
+            <list>
+               <value>classpath:jdbc.properties</value>
+                <!--要是有多个配置文件，只需在这里继续添加即可 -->
+            </list>
+        </property>
+    </bean>
+    
+    <bean id="dataSource" class="com.cinema.sys.utils.DynamicDataSource" >
+    	<property name="defaultTargetDataSource" ref="dataSource2018"></property>
+    	<property name="targetDataSources">
+    		<map key-type="java.lang.String">
+    			<entry key="dataSource2018" value-ref="dataSource2018" />
+    			<entry key="dataSource2017" value-ref="dataSource2017" />
+    		</map>
+    	</property>
+    </bean>
+    
+   <bean id="dataSource2018" class="org.apache.commons.dbcp.BasicDataSource" 
+		destroy-method="close">
+		<property name="driverClassName" value="${jdbc.driver}" />
+		<property name="url" value="${jdbc.sql.url}" />
+		<property name="username" value="${jdbc.username}" />
+		<property name="password" value="${jdbc.password}" />
+		<property name="initialSize" value="${dataSource.initialSize}" />
+		<property name="maxActive" value="${dataSource.maxActive}" />
+		<property name="maxWait" value="${dataSource.maxWait}" /> 
+		<!-- 每隔idleConnectionTestPeriod秒测试一下数据库连接是否断开，如果断开，重新连接 -->
+		<!-- 会影响一些性能，请自行根据需要使用 -->
+		<!--<property name="testConnectionOnCheckin" value="true" /> -->
+		<!-- <property name="idleConnectionTestPeriod" value="60" /> -->
+	</bean>
+
+	<bean id="dataSource2017" class="org.apache.commons.dbcp.BasicDataSource" 
+		destroy-method="close">
+		<property name="driverClassName" value="${jdbc.driver}" />
+		<property name="url" value="${jdbc.sql.url.kpidata}" />
+		<property name="username" value="${jdbc.username}" />
+		<property name="password" value="${jdbc.password}" />
+		<property name="initialSize" value="${dataSource.initialSize}" />
+		<property name="maxActive" value="${dataSource.maxActive}" />
+		<property name="maxWait" value="${dataSource.maxWait}" />
+		<!-- 每隔idleConnectionTestPeriod秒测试一下数据库连接是否断开，如果断开，重新连接 -->
+		<!-- 会影响一些性能，请自行根据需要使用 -->
+		<!--<property name="testConnectionOnCheckin" value="true" /> -->
+		<!-- <property name="idleConnectionTestPeriod" value="60" /> -->
+	</bean>
+
+
+    <!-- 配置Mybatis的文件 ，mapperLocations配置**Mapper.xml文件位置，configLocation配置mybatis-config文件位置-->
+	<bean id="sqlSessionFactory" class="com.cinema.sys.utils.MySqlSessionFactoryBean">
+		<property name="dataSource" ref="dataSource" />
+        <property name="mapperLocations">
+	        <array>
+	         <value>classpath*:com/cinema/biz/dao/impl/*.xml</value>
+	         <value>classpath*:com/cinema/sys/dao/impl/*.xml</value>
+	         <value>classpath*:com/cinema/common/dao/impl/*.xml</value> 
+	         <value>classpath*:com/generate/dao/impl/*.xml</value> 
+	        </array>
+        </property> 
+        <property name="typeAliasesPackage" value="com.generate.model"/>
+        <property name="plugins">
+            <array>
+                <bean class="com.github.pagehelper.PageInterceptor">
+                    <!-- 这里的几个配置主要演示如何使用，如果不理解，一定要去掉下面的配置 -->
+                    <property name="properties">
+                        <value>
+                            helperDialect=mysql
+                            reasonable=true
+                            supportMethodsArguments=true
+                            params=count=countSql
+                            autoRuntimeDialect=true
+                        </value>
+                    </property>
+                </bean>
+            </array>
+        </property>
+
+	</bean>
+	<!-- 自动扫描了所有的XxxxMapper.xml对应的mapper接口文件，这样就不用一个一个手动配置Mpper的映射了，只要Mapper接口类和Mapper映射文件对应起来就可以了。 -->
+	<bean class="tk.mybatis.spring.mapper.MapperScannerConfigurer">
+		<property name="basePackage" value="com.cinema.biz.dao
+		                                    ,com.cinema.sys.dao
+		                                    ,com.cinema.common.dao
+		                                    ,com.generate.dao" />
+	</bean>
+
+	<!-- 定义事物 -->
+	 <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource" ref="dataSource"></property>		
+	</bean> 
+	<!-- 自动扫描注解的bean -->
+	<context:component-scan base-package="com.cinema.biz.service
+	                                                                                                               ，com.cinema.sys.service
+	                                                                                                               ，com.cinema.common.service" />
+
+</beans>

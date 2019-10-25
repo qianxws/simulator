@@ -1,0 +1,85 @@
+<div id="vmEdit">
+	<div class="row">
+		<label class="col-sm-2 col-md-1 text-right">角色名称：</label>
+		<input class="col-sm-2 col-md-2" type="text" id="role-name" />
+		<label class="col-sm-2 col-md-1 text-right">角色描述：</label>
+		<input class="col-sm-4 col-md-4" type="text" id="role-des" />
+	</div>
+	<div class="row" style="margin-top:20px;">
+		<ul class="nav nav-tabs" id="myTab">
+			<li v-if="id != 1" class="active"><a data-toggle="tab" href="#menu-role"> 
+				<i class="green ace-icon fa fa-key bigger-120"></i> 基本权限
+			</a></li>
+			<li v-if="id != 1"><a data-toggle="tab" href="#hall-role"> 
+				<i class="green ace-icon fa fa-list bigger-120"></i> 影厅权限
+			</a></li>
+			<li :class="id == 1 ? 'active' : ''"><a data-toggle="tab" href="#role-user"> 
+				<i class="green ace-icon fa fa-user bigger-120"></i> 角色用户
+			</a></li>
+		</ul>
+		<div class="tab-content" id="roleVmEdit" style="min-height:400px;">
+			<div id="menu-role" v-if="id != 1" class="tab-pane fade in active">
+				<div class="widget-box widget-color-blue2">
+					<div class="widget-header">
+						<h4 class="widget-title lighter smaller">基本权限</h4>
+					</div>
+					
+					<div class="widget-body" style="min-height:400px;">
+						<div class="widget-main padding-8">
+							<ul id="baseAuthZtree" class="ztree"></ul>
+						</div>
+					</div>
+				</div>
+				<!-- <div v-for="pItem in roleData" class="p-item checkbox">
+					<div class="pItem">
+						<label >
+							<input type="checkbox" :id="'checkbox_' + pItem.authId" v-on:click="checkPitem(pItem)"/>
+							<span class="lbl" style="font-size:16px;">{{ pItem.name }}</span>
+						</label>
+					</div>
+					<div class="child-content" :id="'child_' + pItem.authId">
+						<label v-for="item in pItem.childAuth" class="role-item ace">
+							<input type="checkbox" :id="'checkbox_' + item.authId" v-on:click="checkItem(pItem.authId)"/>
+							<span class="lbl">{{ item.name }}</span>
+						</label>
+					</div>
+				</div> -->
+			</div>
+			<div id="hall-role" v-if="id != 1" class="tab-pane fade in">
+				<div class="widget-box widget-color-blue2">
+					<div class="widget-header">
+						<h4 class="widget-title lighter smaller">影院权限</h4>
+					</div>
+					
+					<div class="widget-body" style="min-height:400px;">
+						<div class="widget-main padding-8">
+						<ul id="hallAuthZtree" class="ztree"></ul>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div id="role-user" :class="id == 1 ? 'tab-pane fade in active' : 'tab-pane fade in'">
+				<select multiple="multiple" size="10" name="duallistbox_demo1" id="duallist">
+					<option v-for="user in userList" :value="user.id">{{ user.name }}</option>
+				</select>
+			</div>
+		</div>
+	</div>
+	<div class="center">
+		<div class="btn btn-info" v-on:click="save()">保存</div>
+		<div class="btn" v-on:click="callBack()">返回</div>
+	</div>
+</div>
+<style>
+	.pItem{height:28px;line-height:28px;background-color:#c4ddf3;padding-left:8px;}
+	.role-item{margin:4px 8px;}
+	.pItem input{margin:8px;}
+	#role-user .move,.remove{display:none;}
+	#role-user .btn-group{width:100%;}
+	#role-user .moveall,.removeall{width:100%;}
+</style>
+<link rel="stylesheet"href="jslib/zTree/css/zTreeStyle/zTreeStyle.css" type="text/css">
+<script type="text/javascript" src="jslib/zTree/js/jquery.ztree.core.js"></script>
+<script type="text/javascript" src="jslib/zTree/js/jquery.ztree.excheck.js"></script>
+<script type="text/javascript" src="assets/js/jquery.bootstrap-duallistbox.min.js"></script>
+<script src="modules/role/edit.js"></script>

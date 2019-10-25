@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cinema.sys.dao.DictionaryMapper">
+  <resultMap id="BaseResultMap" type="com.cinema.sys.model.Dictionary">
+    <result column="dictionary_id" jdbcType="VARCHAR" property="id" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="code" jdbcType="VARCHAR" property="code" />
+    <result column="value" jdbcType="VARCHAR" property="value" />
+    <result column="note" jdbcType="VARCHAR" property="note" />
+    <result column="parent_id" jdbcType="VARCHAR" property="parentId" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="creator" jdbcType="VARCHAR" property="creator" />
+    <result column="updator" jdbcType="VARCHAR" property="updator" />
+    <result column="state" jdbcType="NUMERIC" property="state" />
+  </resultMap>
+  
+  <sql id="Base_Column_List">
+    t.dictionary_id,t.name,t.code, t.value, t.note, t.parent_id, t.create_time, t.update_time, t.creator, t.updator,t.state
+  </sql>
+  
+  <!-- 得到子项 -->
+  <select id="getOptions"  resultType="com.cinema.sys.model.Option">
+    select t.dictionary_id as id,t.name
+    from sys_dictionary t
+    where t.parent_id = #{id}
+  </select>
+  
+  <!-- 分页查询 -->
+  <select id="getList" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from sys_dictionary t
+    where t.parent_id = #{paraMap.parentId}
+  </select>
+  
+  
+  <!-- 分页查询 -->
+  <select id="getTopList" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from sys_dictionary t
+    where t.parent_id='0'
+	<if test="paraMap.name != null and paraMap.name != ''">
+		and t.name like concat(concat('%',#{paraMap.name}),'%')
+	</if>
+	order by t.create_time desc
+  </select>
+  
+  <select id="getAllTopList" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from sys_dictionary t
+    where t.parent_id='0'  and t.state = '1'
+  </select>
+  
+   <select id="find" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from sys_dictionary t
+    where t.parent_id = #{paraMap.parentId}
+  </select>
+  
+  <delete id="deleteByPid">
+    delete from sys_dictionary
+    where parent_id = #{parentId}
+  </delete>
+  
+  <select id="getDetail" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from sys_dictionary t
+    where t.dictionary_id = #{id}
+  </select>
+
+   
+</mapper>

@@ -1,0 +1,28 @@
+<div id="vmEdit" :controller="vmEdit" class="tab-content">
+<div class="row">
+<form class=" col-sm-12 form-horizontal" id="editForm" role="form">
+
+        <div class="form-group">
+    		<label class="col-sm-4 control-label no-padding-right" for="name"><strong class="str"> *</strong>依赖关系：</label>
+    		<div class="col-sm-7"><input  class="col-sm-10" type="text" name="name" :duplex="model.name" placeholder="依赖关系" /></div>
+    	</div>
+        <div class="form-group">
+    		<label class="col-sm-4 control-label no-padding-right" for="runOrder"><strong class="str"> *</strong>启动顺序：</label>
+    		<div class="col-sm-7"><input  class="col-sm-10" type="text" onkeyup="this.value=this.value.replace(/[^0-9]/g,'')" name="runOrder" :duplex="model.runOrder" placeholder="启动顺序" /></div>
+    	</div>
+        <div class="form-group">
+    		<label class="col-sm-4 control-label no-padding-right" for="createTime"><strong class="str"> *</strong>创建时间：</label>
+    		<div class="col-sm-7"><input readonly class="col-sm-10" type="text" name="createTime" :duplex="model.createTime" placeholder="创建时间" /></div>
+    	</div>
+        <div class="form-group">
+    		<label class="col-sm-4 control-label no-padding-right" for="creator"><strong class="str"> *</strong>创建人：</label>
+    		<div class="col-sm-7"><input readonly class="col-sm-10" type="text" name="creator" :duplex="model.creator" placeholder="创建人" /></div>
+    	</div>
+</form>
+</div>
+</div>
+<style>
+	.help-block{display: inline-block;}
+</style>
+<script src="modules/simdependency/biz.js"></script>
+<script src="modules/simdependency/edit.js"></script>

@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>  
+<!DOCTYPE generatorConfiguration  
+  PUBLIC "-//mybatis.org//DTD MyBatis Generator Configuration 1.0//EN"  
+  "http://mybatis.org/dtd/mybatis-generator-config_1_0.dtd">  
+<generatorConfiguration>  
+    <properties  resource="generator.properties" />
+
+<!-- 数据库驱动-->  
+    <classPathEntry  location="${generate.connection.location}"/>  
+ 	<context id="DB2Tables" targetRuntime="MyBatis3"
+		>
+		<!-- 自动识别数据库关键字，默认false，如果设置为true，根据SqlReservedWords中定义的关键字列表； 一般保留默认值，遇到数据库关键字（Java关键字），使用columnOverride覆盖 -->
+		<property name="autoDelimitKeywords" value="false" />
+		<!-- 生成的Java文件的编码 -->
+		<property name="javaFileEncoding" value="UTF-8" />
+		<!-- 格式化java代码 -->
+		<property name="javaFormatter"
+			value="org.mybatis.generator.api.dom.DefaultJavaFormatter" />
+		<!-- 格式化XML代码 -->
+		<property name="xmlFormatter"
+			value="org.mybatis.generator.api.dom.DefaultXmlFormatter" />
+
+		<!-- 注释 -->
+		<commentGenerator>
+			<property name="suppressAllComments" value="true"></property>
+			<property name="suppressDate" value="true"></property>
+			<property name="javaFileEncoding" value="utf-8" />
+			<property name="javaFormatter"
+				value="org.mybatis.generator.api.dom.DefaultJavaFormatter"></property>
+			<property name="xmlFormatter"
+				value="org.mybatis.generator.api.dom.DefaultXmlFormatter"></property>
+		</commentGenerator>
+ 
+		<!-- 数据库连接 -->
+        <jdbcConnection driverClass="${jdbc.driver}" connectionURL="${jdbc.url}" userId="${jdbc.username}" password="${jdbc.password}"> 
+        </jdbcConnection>
+ 
+		<!-- java类型处理器 用于处理DB中的类型到Java中的类型，默认使用JavaTypeResolverDefaultImpl； 注意一点，默认会先尝试使用Integer，Long，Short等来对应DECIMAL和 
+			NUMERIC数据类型； -->
+		<javaTypeResolver
+			type="org.mybatis.generator.internal.types.JavaTypeResolverDefaultImpl">
+			<!-- true：使用BigDecimal对应DECIMAL和 NUMERIC数据类型 false：默认, scale>0;length>18：使用BigDecimal; 
+				scale=0;length[10,18]：使用Long； scale=0;length[5,9]：使用Integer； scale=0;length<5：使用Short； -->
+			<property name="forceBigDecimals" value="false" />
+		</javaTypeResolver>
+ <!-- 生成模型的包名和位置-->  
+		<javaModelGenerator targetPackage="${modelPackage}" targetProject="${targetProject}"> 
+			<property name="enableSubPackages" value="false"></property>
+			<property name="trimStrings" value="true"></property>
+			<property name="constructorBased" value="false"></property>
+			<property name="immutable" value="false" />
+		</javaModelGenerator>
+ <!-- 生成映射文件的包名和位置--> 
+		<sqlMapGenerator targetPackage="${sqlMapperPackage}" targetProject="${targetProject}"> 
+			<property name="enableSubPackages" value="true" />
+		</sqlMapGenerator>
+		
+<!-- 生成DAO的包名和位置 -->
+		<javaClientGenerator type="XMLMAPPER" targetPackage="${mapperPackage}" targetProject="${targetProject}"> 
+			<property name="enableSubPackages" value="true" />
+		</javaClientGenerator>
+
+
+ <!-- 要生成的表 tableName是数据库中的表名或视图名 domainObjectName是实体类名-->  
+  <!--
+	 	<table  tableName="sys_user" domainObjectName="TUser"  enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false"></table>
+		<table  tableName="sys_log" domainObjectName="TLog"  enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false"></table>
+		<table  tableName="sys_auth" domainObjectName="TAuth"  enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false"></table>
+		<table  tableName="sys_menu" domainObjectName="TMenu"  enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false"></table>
+        <table  tableName="sys_role" domainObjectName="TRole"  enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false"></table>
+ 		<table  tableName="sys_role_auth" domainObjectName="TRoleAuth"  enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false"></table>
+ 		<table  tableName="sys_user_role" domainObjectName="TRoleUser"  enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false"></table>
+ 		<table  tableName="sys_role_hall" domainObjectName="TRoleHall"  enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false"></table>
+ 		<table  tableName="sys_layout" domainObjectName="TLayout"  enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false"></table>
+ 	 	<table  tableName="sys_auth" domainObjectName="TAuth"  enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false"></table>
+ 	 	<table  tableName="sys_db_config" domainObjectName="TDbconfig"  enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false"></table>
+ 	 	<table  tableName="sys_dictionary" domainObjectName="TDictionary"  enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false"></table>
+	<table  tableName="sys_user" domainObjectName="TUser"  enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false"></table>
+	<table  tableName="sys_company" domainObjectName="Company"  enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false"></table>
+ <table  tableName="sys_province" domainObjectName="Province"  enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false"></table>
+<table  tableName="sys_site" domainObjectName="Site"  enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false"></table>
+   <table  tableName="sys_area" domainObjectName="Area"  enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false"></table>
+      -->
+      
+  <!-- 
+<table  tableName="sim_type" domainObjectName="SimType"  enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false"></table>
+<table  tableName="sim_field" domainObjectName="SimField"  enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false"></table>
+<table  tableName="sim_device" domainObjectName="SimDevice"  enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false"></table>
+
+<table  tableName="sim_simulator" domainObjectName="SimSimulator"  enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false"></table>
+<table  tableName="sim_fault" domainObjectName="SimFault"  enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false"></table>
+<table  tableName="sim_repair" domainObjectName="SimRepair"  enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false"></table>
+<table  tableName="sim_maintenance" domainObjectName="SimMaintenance"  enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false"></table>
+<table  tableName="sim_operate" domainObjectName="SimOperate"  enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false"></table>
+<table  tableName="sim_type_field" domainObjectName="SimTypeField"  enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false"></table>
+<table  tableName="sim_threshold" domainObjectName="SimThreshold"  enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false"></table>
+<table  tableName="sim_dependency" domainObjectName="SimDependency"  enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false"></table>
+<table  tableName="sim_fault_lib" domainObjectName="SimFaultLib"  enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false"></table>
+
+ <table  tableName="sim_device_dependency" domainObjectName="SimDeviceDependency"  enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false"></table>
+
+<table  tableName="sim_duty_task" domainObjectName="SimDutyTask"  enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false"></table>
+   -->
+<table  tableName="sim_duty_reg" domainObjectName="SimDutyReg"  enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false"></table>
+
+	</context> 
+</generatorConfiguration>  

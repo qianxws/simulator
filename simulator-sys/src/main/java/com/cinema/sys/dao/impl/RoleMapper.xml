@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cinema.sys.dao.RoleMapper">
+  <resultMap id="BaseResultMap" type="com.cinema.sys.model.Role">
+    <id column="role_id" jdbcType="VARCHAR" property="id" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="description" jdbcType="VARCHAR" property="description" />
+    <result column="state" jdbcType="NUMERIC" property="state" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="creator" jdbcType="VARCHAR" property="creator" />
+  </resultMap>
+  <sql id="table">
+  	sys_role
+  </sql>
+  <sql id="Base_Column_List">
+    role_id, name, description, state, create_time, creator
+  </sql>
+  <select id="getDetail" resultMap="BaseResultMap">
+    select <include refid="Base_Column_List" />
+    from <include refid="table" />
+    where role_id = #{id}
+  </select>
+  <select id="getList" parameterType="Map" resultMap="BaseResultMap">
+    select <include refid="Base_Column_List" />
+    from <include refid="table" />
+    where 1=1   
+  	<if test="startTime != null and startTime != ''">
+  		and create_time >= #{startTime}
+  	</if>
+  	<if test="endTime != null and endTime != ''"><![CDATA[
+  		and create_time <= #{endTime}
+  	]]></if>
+	<if test="name != null and name != ''">
+		and name like concat(concat('%',#{name}),'%')
+	</if>
+	<if test="state ==1 or state ==0">
+		and state = #{state}
+	</if>
+	order by create_time desc
+  </select>
+  <select id="exist" resultType="Boolean">
+	  select count(1) 
+	  from <include refid="table" />
+	  where role_id!=#{id}  and name =#{name}
+  </select>
+</mapper>

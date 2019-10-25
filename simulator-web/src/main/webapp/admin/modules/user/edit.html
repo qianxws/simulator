@@ -1,0 +1,135 @@
+<div id="vmEdit" class="tabbable">
+	<ul class="nav nav-tabs" id="myTab">
+		<li class="active"><a data-toggle="tab" href="#home"> <i
+				class="green ace-icon fa fa-pencil-square-o bigger-120"></i> 基本信息
+		</a></li>
+		<li><a data-toggle="tab" href="#messages"> <i
+				class="green ace-icon fa fa-key bigger-120"></i> 角色设置
+		</a></li>
+	</ul>
+	<div id="userVmEdit" class="tab-content">
+		<div id="home" class="tab-pane fade in active">
+			<div class="row">
+				<div class="col-xs-12">
+					<!-- PAGE CONTENT BEGINS -->
+					<form class="form-horizontal" id="validation-form" role="form">
+						<div class="form-group">
+							<label class="col-sm-3 control-label no-padding-right" for="id"> 用户名：</label>
+							<div class="col-sm-8">
+								<div class="clearfix">
+								    <span style="line-height: 32px;" id="item-id" v-if="item.id">{{item.id}}</span> 
+									<input type="text" id="id" name="id" v-show="!item.id"
+										placeholder="输入登录名" class="col-xs-8" maxlength="60"
+										onkeyup="this.value=this.value.replace(/[^\u4e00-\u9fa5\w]/g,'')"/>
+								</div>
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="col-sm-3 control-label no-padding-right" for="password"> 密码： </label>
+							<div class="col-sm-8">
+								<div class="clearfix">
+									<input type="password" id="password" name="password"
+										placeholder="*******" class="col-xs-8" maxlength="30"   />
+									<span id="password-pit" style="color: red; line-height: 32px;" v-if="item.edit">&nbsp;不修改请留空</span> 
+									<span style="color: red;" v-else></span>
+								</div>
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="col-sm-3 control-label no-padding-right" for="username"> 姓名： </label>
+							<div class="col-sm-8">
+								<div class="clearfix">
+									<input type="text" id="name" name="name" placeholder="输入姓名"
+										class="col-xs-8" maxlength="60"
+										onkeyup="this.value=this.value.replace(/[^\u4e00-\u9fa5\w]/g,'')"/>
+								</div>
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="col-sm-3 control-label no-padding-right"> 性别：</label>
+							<div class="col-sm-8" style=" margin-top: 7px;">
+								<input type="radio" name="sex" id="form-field-man" value="true"> 
+								<label for="form-field-man"> 男 </label> 
+								<input type="radio" name="sex" id="form-field-wuman" value="false" /> 
+								<label for="form-field-wuman"> 女 </label>
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="col-sm-3 control-label no-padding-right" for="tel"> 电话：</label>
+							<div class="col-sm-8">
+								<div class="clearfix">
+									<input type="text" id="tel" name="tel" placeholder="输入电话"
+										class="col-xs-8" maxlength="11" />
+								</div>
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="col-sm-3 control-label no-padding-right" for="phone"> 手机：</label>
+							<div class="col-sm-8">
+								<div class="clearfix">
+									<input type="text" id="phone" name="phone" placeholder="输入手机"
+										class="col-xs-8" maxlength="11" 
+										onkeyup="this.value=this.value.replace(/[^0-9]/g,'')"/>
+								</div>
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="col-sm-3 control-label no-padding-right" for="phone"> QQ：</label>
+							<div class="col-sm-8">
+								<div class="clearfix">
+									<input type="text" id="qq" name="qq" placeholder="输入QQ"
+										class="col-xs-8" maxlength="20" 
+										onkeyup="this.value=this.value.replace(/[^0-9]/g,'')"/>
+								</div>
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="col-sm-3 control-label no-padding-right" for="email"> Email：</label>
+							<div class="col-sm-8">
+								<div class="clearfix">
+									<input type="text" id="email" name="email"
+										placeholder="输入Email" class="col-xs-8" />
+								</div>
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="col-sm-3 control-label no-padding-right">状态： </label>
+							<div class="col-sm-8" id="jqu-enabled" style="margin-top: 7px;">
+								<input type="radio" id="enabled" name="enabled" value="1" checked="checked"> 
+								<label for="enabled"> 正常</label> 
+								<input type="radio" id="unenabled" name="enabled" value="0" /> 
+								<label for="unenabled"> 禁用 </label>
+							</div>
+						</div>
+					</form>
+				</div>
+				<!-- /.col -->
+			</div>
+			<!-- /.row -->
+		</div>
+
+		<div id="messages" class="tab-pane fade">
+			<div class="row">
+				<div class="col-sm-12">
+					<div class="widget-box widget-color-blue2">
+						<div class="widget-header">
+							<h4 class="widget-title lighter smaller">选择角色</h4>
+						</div>
+						<div>
+							<select multiple="multiple" size="20" name="duallistbox_demo1" id="duallist">
+								<option v-for="role in roleList" :value="role.id">{{ role.name }}</option>
+							</select>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<style>
+	#messages .move,.remove,.info-container{display:none;}
+	#messages .btn-group{width:100%;}
+	#messages .moveall,.removeall{width:100%;}
+</style>
+<script type="text/javascript" src="assets/js/jquery.bootstrap-duallistbox.min.js"></script>
+<script src="modules/user/edit.js"></script>

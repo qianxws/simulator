@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cinema.sys.dao.SysHallMapper">
+  <resultMap id="BaseResultMap" type="com.cinema.sys.model.SysHall">
+    <id column="hall_id" jdbcType="VARCHAR" property="hallId" />
+    <result column="hall_type_id" jdbcType="VARCHAR" property="hallTypeId" />
+    <result column="cinema_id" jdbcType="VARCHAR" property="cinemaId" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="hall_num" jdbcType="NUMERIC" property="hallNum" />
+    <result column="seats" jdbcType="NUMERIC" property="seats" />
+    <result column="creator" jdbcType="VARCHAR" property="creator" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="hall_code" jdbcType="VARCHAR" property="hallCode" />
+    <result column="province_id" jdbcType="VARCHAR" property="provinceId" />
+    <result column="city_id" jdbcType="VARCHAR" property="cityId" />
+    
+  </resultMap>
+  <sql id="Base_Column_List">
+    hall_id, hall_type_id, cinema_id, name, hall_num, seats, creator, create_time, hall_code
+  </sql>
+
+  <select id="getListByCinemaId"   resultMap="BaseResultMap">
+    select h.hall_id from hall h where h.cinema_id =#{cinemaId}
+  </select> 
+   
+  <select id="getListByCityId"   resultMap="BaseResultMap">
+    select h.hall_id, h.cinema_id from hall h join cinema ci on h.cinema_id = ci.cinema_id where ci.city_id =#{cityId}
+  </select>
+   
+  <select id="getListByProvinceId"  resultMap="BaseResultMap">
+	select c.city_id, ci.cinema_id, h.hall_id  
+	from province p join city c on p.province_id = c.province_id  
+	  join cinema ci on ci.city_id = c.city_id 
+	  join hall h on ci.cinema_id = h.cinema_id  
+	where p.province_id = #{provinceId} and ci.state = 1 
+  </select>
+
+</mapper>

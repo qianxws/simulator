@@ -1,0 +1,257 @@
+<div id="vmEdit" class="tabbable">
+	<ul class="nav nav-tabs" id="myTab">
+		<li class="active"><a data-toggle="tab" href="#home"> <i
+				class="green ace-icon fa fa-pencil-square-o bigger-120"></i> 基本信息
+		</a></li>
+		<li><a data-toggle="tab" href="#messages"> <i
+				class="green ace-icon fa fa-key bigger-120"></i> 菜单权限
+		</a></li>
+		<li><a data-toggle="tab" href="#dataAuth"> <i
+				class="green ace-icon fa fa-list bigger-120"></i> 影院权限
+		</a></li>
+		<li><a data-toggle="tab" href="#userSet"> <i
+				class="green ace-icon fa fa-user bigger-120"></i> 用户设置
+		</a></li>
+	</ul>
+	<div class="tab-content" id="roleVmEdit" style="height:430px;">
+		<div id="home" class="tab-pane fade in active">
+			<div class="row">
+				<div class="col-xs-12">
+					<!-- PAGE CONTENT BEGINS -->
+					<form class="form-horizontal" id="validation-form" role="form">
+						<div class="form-group">
+							<label class="col-sm-5 control-label no-padding-right" for="name">角色名称：</label>
+							<div class="col-sm-6">
+								<div class="clearfix">
+									<input type="text" id="name" name="name" class="col-xs-5" placeholder="输入名称"/>
+								</div>
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="col-sm-5 control-label no-padding-right" for="description"> 角色描述：</label>
+							<div class="col-sm-6">
+								<div class="clearfix">
+									<input type="text" id="description" name="description" class="col-xs-5" rows="10" placeholder="输入描述"/>
+								</div>
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="col-sm-5 control-label no-padding-right">
+								上级节点：</label>
+							<div class="col-sm-6">
+								<div class="clearfix">
+									<div style="position: relative;">
+									    <input type="hidden" id="edit" name="edit" />
+										<input type="text" id="pname" name="pname" class="col-xs-5" placeholder="选择父节点"/>
+										<div id="roleTree" code="roleTree" class="text-down-t">
+											<ul id="rolesTree" class="ztree" style="height:239px;overflow-y: auto"></ul>
+										</div>
+										<i id="roleTreeBtn" class="ace-icon fa fa-caret-down icon-down-i"></i>
+										<input type="hidden" id="pid" name="pid"/>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="form-group" id="roleCseq" style="display:none;">
+                            <label class="col-sm-5 control-label no-padding-right"> 排序：</label>
+                            <div class="col-sm-6">
+                                <div class="clearfix">
+                                <input type="hidden" id="oldCseq" name="oldCseq" />
+                                	<select id="cseq" name="cseq" class="col-xs-5" style="padding-left: 0px;">
+                                	</select>
+                                </div>
+                            </div>
+                        </div>
+						<div class="form-group">
+							<label class="col-sm-5 control-label no-padding-right"> 状态： </label>
+							<div class="col-xs-3" id="vue-enabled">
+								<label> 
+									<input name="switch-field-1" class="ace ace-switch ace-switch-4" type="checkbox" v-model="item.enabled" /> 
+									<span class="lbl" style="margin-top: 7px;"></span>
+								</label>
+							</div>
+							<div class="col-sm-6" id="jqu-enabled" style="display:none; margin-top: 7px;">
+								<input type="radio" id="enabled" name="enabled" value="true"> 
+								<label for="enabled"> 正常</label> 
+								<input type="radio" id="" name="enabled" value="false" /> 
+								<label for="unenabled"> 禁用 </label>
+							</div>
+						</div>
+					</form>
+
+				</div>
+				<!-- /.col -->
+			</div>
+			<!-- /.row -->
+		</div>
+		<div id="messages" class="tab-pane fade">
+			<div class="row">
+				<div class="col-sm-12">
+					<div class="widget-box widget-color-blue2">
+						<div class="widget-header">
+							<h4 class="widget-title lighter smaller">选择权限</h4>
+						</div>
+						
+						<div style="padding: 10px 20px 0px 20px; margin-right: 30px; width: 400px;">
+							<span>
+								<a  onclick="switchStyle();" 
+									style="margin-left: 0px;cursor:pointer;text-decoration: none;
+										width: 76px;height: 22px;padding-left: 5px; color:red;"> 
+									 [切换风格]
+								</a>
+							</span>
+						</div>
+						
+						<div class="widget-body" >
+							<div class="widget-main padding-8">
+								<div id="searchId" class="searchClass" style="display: none;">
+									<input type="text" id="searchName" class="searchInput" placeholder="模糊搜索" onkeyup="searchName()"/>
+									<label onclick="removeSearchName()" class="searchBut"> 清空</label>
+								</div>
+								<ul id="role_Auths" class="ztree" style="display: none;"></ul>
+								
+								<div id="authsSelect" style="display: none;">
+									<div class="selectbox">
+										<div class="select-bar">
+											<select name="selectLeft" id="selectLeft" multiple="multiple">
+											</select>
+										</div>
+										<div class="select-bar">
+											<div style="text-align: center;margin-top: 60px;">
+												<p><span id="selectAdd"><input type="button" class="select-btn" value=">"  title="添加" /></span></p>
+												<p><span id="selectAddAll"><input type="button" class="select-btn" value=">>" title="全部添加" /></span></p>
+												<p><span id="selectRemove"><input type="button" class="select-btn" value="<" title="移除" /></span></p>
+												<p><span id="selectRemoveAll"><input type="button" class="select-btn" value="<<" title="全部移除" /></span></p>
+											</div>
+										</div>
+										<div class="select-bar">
+											<select name="selectRight" id="selectRight" multiple="multiple"></select>
+										</div>
+									</div>
+								</div>
+								
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div id="dataAuth" class="tab-pane fade">
+			<div class="row">
+				<div class="col-sm-12">
+					<div class="widget-box widget-color-blue2">
+						<div class="widget-header">
+							<h4 class="widget-title lighter smaller">影院权限</h4>
+						</div>
+						
+						<div class="widget-body" >
+							<div class="widget-main padding-8">
+							<ul id="hallAuthZtree" class="ztree"></ul>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>			
+		</div>
+		<div id="userSet" class="tab-pane fade">
+			<div class="row">
+				<div class="col-sm-12">
+					<div class="widget-box widget-color-blue2">
+						<div class="widget-header">
+							<h4 class="widget-title lighter smaller">选择用户</h4>
+						</div>
+						<div class="widget-body" >
+							<div class="widget-main padding-8">
+								<div id="searchId_" class="searchClass" style="display: none;">
+									<input type="text" id="searchName_" class="searchInput" placeholder="模糊搜索" onkeyup="searchName()"/>
+									<label onclick="removeSearchName()" class="searchBut"> 清空</label>
+								</div>
+								<ul id="role_Auths_" class="ztree" style="display: none;"></ul>
+								
+								<div id="authsSelect_" style="display: none;">
+									<div class="selectbox">
+										<div class="select-bar">
+											<select name="selectLeft_" id="selectLeft_" multiple="multiple">
+												<option v-for="option in shareOptions" v-bind:value="option.value">
+		                                		    {{option.text}}
+		                                		</option>
+											</select>
+										</div>
+										<div class="select-bar">
+											<div style="text-align: center;margin-top: 60px;">
+												<p><span id="selectAdd_"><input type="button" class="select-btn" value=">"  title="添加" /></span></p>
+												<p><span id="selectAddAll_"><input type="button" class="select-btn" value=">>" title="全部添加" /></span></p>
+												<p><span id="selectRemove_"><input type="button" class="select-btn" value="<" title="移除" /></span></p>
+												<p><span id="selectRemoveAll_"><input type="button" class="select-btn" value="<<" title="全部移除" /></span></p>
+											</div>
+										</div>
+										<div class="select-bar">
+											<select  name="selectRight_" id="selectRight_" multiple="multiple"></select>
+										</div>
+									</div>
+								</div>
+								
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<style>
+.modal-dialog {
+	width: 768px;
+}
+
+.help-block {
+	display: inline-block;
+	margin-left: 8px;
+}
+
+.widget-body {
+	background-color: #FFF;
+	height: 320px;
+	overflow-y: scroll;
+}
+.icon-down-i {
+	display: inline-block;
+	z-index:99;
+	margin-left: -14px;
+	top: 10px;
+	position: absolute;
+	font-size: 12px; 
+	color: #858585; 
+	text-align: center; 
+	width: 4px;
+}
+.text-down-t {
+	position: absolute; 
+	min-height: 20px; 
+	max-height: 240px; 
+	border: 1px #7B9DD4 solid; 
+	background-color: #ffffff; 
+	top: 34px; 
+	z-index: 999; 
+	border-top: none; 
+	display: none; 
+}
+</style>
+<link rel="stylesheet" href="vendors/zTree/css/zTreeStyle/zTreeStyle.css" type="text/css">
+<script type="text/javascript" src="vendors/zTree/js/jquery.ztree.core.js"></script>
+<script type="text/javascript" src="vendors/zTree/js/jquery.ztree.excheck.js"></script>
+<link rel="stylesheet" href="css/selectType.css" type="text/css">
+<script type="text/javascript" src="js/selectType.js"></script>
+<script type="text/javascript" src="js/ztree.js"></script>
+<script type="text/javascript" src="js/pinyin.js"></script>
+<script type="text/javascript" src="js/pinyin2.js"></script>
+<script src="modules/role/edit.js"></script>
+<!--[if IE]>
+<script type="text/javascript" src="assets/js/jquery.placeholder.js"></script>
+<script type="text/javascript">
+	$(function () {
+		// Invoke the plugin
+		$('input, textarea').placeholder();
+	});
+</script>
+<![endif]-->

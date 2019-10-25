@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cinema.sys.dao.RoleUserMapper">
+  <resultMap id="BaseResultMap" type="com.cinema.sys.model.RoleUser">
+    <id column="user_role_id" jdbcType="VARCHAR" property="id" />
+    <result column="user_id" jdbcType="VARCHAR" property="userId" />
+    <result column="role_id" jdbcType="VARCHAR" property="roleId" />
+  </resultMap>
+  <sql id="table">
+  	sys_user_role
+  </sql>
+  <sql id="Base_Column_List">
+    user_role_id, user_id, role_id
+  </sql>
+  <select id="getDetail" parameterType="String" resultMap="BaseResultMap">
+    select <include refid="Base_Column_List" />
+    from <include refid="table" />
+    where user_role_id = #{id}
+  </select>
+  <select id="getList" parameterType="Map" resultMap="BaseResultMap">
+    select <include refid="Base_Column_List" />
+    from <include refid="table" />
+    where 1=1
+	<if test="roleId != null and roleId!=''">
+		and role_id =#{roleId}
+	</if>
+	<if test="userId != null and userId!=''">
+		and user_id =#{userId}
+	</if>
+  </select>
+  <delete id="remove"  parameterType="Map">
+    delete from  <include refid="table" />
+     where 1=1
+	<if test="id != null and id!=''">
+		and user_role_id = #{id}
+	</if>
+	<if test="roleId != null and roleId!=''">
+		and role_id =#{roleId}
+	</if>
+	<if test="userId != null and userId!=''">
+		and user_id =#{userId}
+	</if>
+  </delete>
+</mapper>

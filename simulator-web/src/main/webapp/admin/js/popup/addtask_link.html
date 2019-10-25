@@ -1,0 +1,62 @@
+<div id="vmEdit" class="tabbable">
+	<div class="form-group">
+		<span id="titleClientLin" style="display:none;">添加辅助人员</span>
+	</div>
+	<div class="tab-content" id="roleVmEdit">
+		<div id="home" class="tab-pane fade in active">
+			<div class="row">
+				<div class="col-xs-12">
+					<!-- PAGE CONTENT BEGINS -->
+					<form class="form-horizontal" id="validation" role="form">
+						<div class="form-group">
+							<label class="col-sm-3 control-label no-padding-right" for="name">姓名：</label>
+							<div class="col-sm-9">
+								<div class="clearfix">
+									<input type="text" id="name" name="name" placeholder="辅助人员姓名" class="col-xs-5" />
+									<input type="text" id="outsourceOrgId" name="outsourceOrgId" style="display: none;"/>
+								</div>
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="col-sm-3 control-label no-padding-right" for="phone">电话：</label>
+							<div class="col-sm-9">
+								<div class="clearfix">
+									<input type="text" id="phone" name="phone" placeholder="辅助人员电话" class="col-xs-5"/>
+								</div>
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="col-sm-3 control-label no-padding-right" for="position">职务：</label>
+							<div class="col-sm-9">
+								<div class="clearfix">
+									<input type="text" id="position" name="position" placeholder="辅助人员职务" class="col-xs-5"/>
+								</div>
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="col-sm-3 control-label no-padding-right" for="address">地址：</label>
+							<div class="col-sm-9">
+								<div class="clearfix">
+									<input type="text" id="address" name="address" placeholder="辅助人员地址" class="col-xs-8"/>
+								</div>
+							</div>
+						</div>
+					</form>
+				</div>
+				<!-- /.col -->
+			</div>
+			<!-- /.row -->
+		</div>
+	</div>
+</div>
+<!-- JS样式 -->
+<script type="text/javascript" src="js/popup/addtask_link.js"></script>
+<!--[if IE]>
+<script type="text/javascript" src="assets/js/jquery.placeholder.js"></script>
+<script type="text/javascript">
+	$(function () {
+		// Invoke the plugin
+		$('input, textarea').placeholder();
+	});
+</script>
+<![endif]-->

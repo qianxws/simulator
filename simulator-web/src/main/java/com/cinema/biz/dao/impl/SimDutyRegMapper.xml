@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cinema.biz.dao.SimDutyRegMapper">
+  <resultMap id="BaseResultMap" type="com.cinema.biz.model.SimDutyReg">
+    <id column="duty_reg_id" jdbcType="VARCHAR" property="dutyRegId" />
+    <result column="duty_task_id" jdbcType="VARCHAR" property="dutyTaskId" />
+    <result column="duty_content" jdbcType="VARCHAR" property="dutyContent" />
+    <result column="fault_reg" jdbcType="VARCHAR" property="faultReg" />
+    <result column="repair_reg" jdbcType="VARCHAR" property="repairReg" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="creator" jdbcType="VARCHAR" property="creator" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="updator" jdbcType="VARCHAR" property="updator" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    duty_reg_id, duty_task_id, duty_content, fault_reg, repair_reg, create_time, creator, 
+    update_time, updator
+  </sql>
+  <select id="getList" resultMap="BaseResultMap" parameterType="Map">
+    select
+    <include refid="Base_Column_List" />
+    from sim_duty_reg
+    where 1=1
+    <if test="name != null and name != ''">
+		and name like concat(concat('%',#{name}),'%')
+	</if>
+  </select>
+   <select id="getDetail" parameterType="Map" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from sim_duty_reg
+    where 1=1
+	<if test="dutyRegId != null and dutyRegId != ''">
+		and type_id=#{dutyRegId}
+	</if>
+  </select>
+</mapper>

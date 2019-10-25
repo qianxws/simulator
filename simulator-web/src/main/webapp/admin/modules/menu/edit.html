@@ -1,0 +1,59 @@
+<div id="vmEdit" class="tabbable">
+	<div id="menuVmEdit" class="tab-content">
+		<div class="row">
+			<div class="col-xs-12">
+				<form class="form-horizontal" id="validation-form" role="form">
+					<div class="form-group">
+						<label class="col-sm-5 control-label no-padding-right" for="Name"> 名称： </label>
+						<div class="col-sm-6">
+							<div class="clearfix">
+								<input type="text" id="name" name="name" placeholder="name" class="col-xs-6" v-model="item.name" />
+							</div>
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-sm-5 control-label no-padding-right" for="code"> 编码： </label>
+						<div class="col-sm-6">
+							<div class="clearfix">
+								<input type="text" id="code" name="code" placeholder="Code" class="col-xs-6" 
+									onkeyup="this.value=this.value.replace(/[\W]/g,'');" 
+									onblur="this.value=this.value.replace(/[\W]/g,'');"/>
+							</div>
+						</div>
+					</div>
+					<div v-else></div>
+					<div class="form-group">
+						<label class="col-sm-5 control-label no-padding-right" for="url"> URL：</label>
+						<div class="col-sm-6">
+							<div class="clearfix">
+								<input type="text" id="url" name="url" placeholder="Url" class="col-xs-6" />
+							</div>
+						</div>
+					</div>
+					<div class="form-group">
+                        <label class="col-sm-5 control-label no-padding-right"> 上级节点：</label>
+                        <div class="col-sm-6">
+                        	<div class="clearfix">
+	                        	<select class="col-xs-6" id="pid" name="pid">
+	                        	</select>
+                        	</div>
+                        </div>
+                	</div>
+					<div class="form-group">
+						<label class="col-sm-5 control-label no-padding-right"> 状态： </label>
+						<div class="col-sm-6" id="jqu-enabled-z" style="margin-top: 7px;">
+							<input type="radio" id="enabled" name="enabled" value="1" checked="checked"> 
+							<label for="enabled"> 正常</label> 
+							<input type="radio" id="" name="enabled" value="0" /> 
+							<label for="unenabled"> 禁用 </label>
+						</div>
+					</div>
+					<div>
+						<input type="hidden" id="menuid" name="menuid"  />
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+</div>
+<script src="modules/menu/edit.js"></script>

@@ -1,0 +1,250 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cinema.common.dao.MapMapper">
+  <resultMap id="BaseResultMap" type="com.cinema.common.model.MapItem">
+  <!-- 地图通用字段 -->
+    <result column="province_id" jdbcType="VARCHAR" property="provinceId" />
+    <result column="city_id" jdbcType="VARCHAR" property="cityId" />
+    <result column="cinema_id" jdbcType="VARCHAR" property="cinemaId" />
+    <result column="longitude" jdbcType="NUMERIC" property="longitude" />
+    <result column="latitude" jdbcType="NUMERIC" property="latitude" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="is_exception" jdbcType="NUMERIC" property="isException" />
+    <result column="exception_count" jdbcType="NUMERIC" property="exceptionCount" />
+    
+    
+    <result column="report_peoples" jdbcType="NUMERIC" property="reportPeoples" />
+    <result column="ticket_office" jdbcType="NUMERIC" property="ticketOffice" />
+    <result column="ftfc_count" jdbcType="NUMERIC" property="ftfcCount" />
+    <result column="cinema_count" jdbcType="NUMERIC" property="cinemaCount" />
+    <result column="installed_count" jdbcType="NUMERIC" property="installedCount" />
+    <result column="halls" jdbcType="NUMERIC" property="halls" />
+    <result column="seats" jdbcType="NUMERIC" property="seats" />
+
+  </resultMap>
+
+ <!-- 得到地图标题栏信息 -->
+  <select id="getMapTitle" resultMap="BaseResultMap">
+    SELECT  
+		SUM (ftfc.report_peoples) AS report_peoples,  
+		round(SUM (ftfc.ticket_office) / 10000,2) AS ticket_office,  
+		COUNT (ftfc.ftfc_id) AS ftfc_count,  
+	  ( SELECT COUNT (1) FROM cinema ci,city C,province P  
+			WHERE ci.city_id = C .city_id and P .province_id = C .province_id and ci. STATE = 1
+	<if test="paraMap.name != null and paraMap.name != ''">
+		and p.name=#{paraMap.name}
+	</if>
+       ) AS cinema_count,  
+					( select count(1) from cinema,city,province   
+				     where cinema.city_id=city.city_id and city.province_id=province.province_id 
+	<if test="paraMap.name != null and paraMap.name != ''">
+		 AND province.name = #{paraMap.name}
+	</if>
+       ) as installed_count  
+					FROM  
+						ftfc,hall,cinema,city,province  
+					where ftfc.hall_id=hall.hall_id and hall.cinema_id=cinema.cinema_id and cinema.city_id=city.city_id and city.province_id=province.province_id  
+						 AND ftfc.is_audit = 1 
+  	<if test="paraMap.startTime != null and paraMap.startTime != ''">
+  		and ftfc.play_time >= #{paraMap.startTime}
+  	</if>
+  	<if test="paraMap.endTime != null and paraMap.endTime != ''">
+  	<![CDATA[
+  		and ftfc.play_time <= #{paraMap.endTime}
+  	]]>
+  	</if>
+	<if test="paraMap.name != null and paraMap.name != ''">
+		AND province.name = #{paraMap.name}
+	</if>
+  </select>
+  
+ <!-- 得到地图标题栏影片总数 -->
+  <select id="getMapTitleFilms" resultType="Integer">
+   select count(1) from   
+					(SELECT	 ( ftfc.film_id) as ftfcid  
+					FROM	ftfc,hall,cinema,city,province  
+					WHERE	ftfc.hall_id = hall.hall_id AND hall.cinema_id = cinema.cinema_id  
+				  AND cinema.city_id = city.city_id AND city.province_id = province.province_id AND ftfc.is_audit = 1
+  	<if test="paraMap.startTime != null and paraMap.startTime != ''">
+  		and ftfc.play_time >= #{paraMap.startTime}
+  	</if>
+  	<if test="paraMap.endTime != null and paraMap.endTime != ''">
+  	<![CDATA[
+  		and ftfc.play_time <= #{paraMap.endTime}
+  	]]>
+  	</if>
+	<if test="paraMap.name != null and paraMap.name != ''">
+		AND province.name = #{paraMap.name}
+	</if>
+	GROUP BY ftfc.film_id )  as t
+  </select>
+  
+  
+ <!-- 得到地图标题栏异常总数 -->
+  <select id="getMapTitleExceptions" resultType="Integer">
+     select sum(t.is_exception)  
+				from cinema ci left join city c on ci.city_id = c.city_id 
+				  left join province p on p.province_id = c.province_id  
+				  left join (  
+				    select ci2.cinema_id,  
+				     case  
+				     when sum(ff.report_peoples) - sum(ff.verify_peoples) > #{paraMap.cinema_peoplePlusAbsolute}  then 1 
+				     when sum(ff.report_peoples) - sum(ff.verify_peoples) >  #{paraMap.cinema_peoplePlusRelative}  * sum(ff.report_peoples) then 1 
+						when sum(ff.verify_peoples) - sum(ff.report_peoples) > #{paraMap.cinema_peopleMinusAbsolute}  then 1 
+				     when sum(ff.verify_peoples) - sum(ff.report_peoples) > #{paraMap.cinema_peopleMinusRelative}  * sum(ff.report_peoples) then 1 
+						when sum(ff.is_exception) > #{paraMap.cinema_showingsAbsolute}  then 1 
+						when sum(ff.is_exception) > #{paraMap.cinema_showingsRelative}  * count(ff.hall_id) then 1 
+						 else 0 end as is_exception 
+				    from cinema ci2 join hall h on ci2.cinema_id = h.cinema_id 
+				      join ftfc ff on h.hall_id = ff.hall_id 
+				    where ff.play_time > #{paraMap.startTime}
+  	<![CDATA[   
+				     and ff.play_time <= #{paraMap.endTime} 
+  	]]>
+				     and ff.is_audit = 1  
+				    group by ci2.cinema_id 
+				  ) t on t.cinema_id = ci.cinema_id  
+				where ci.state = 1
+	<if test="paraMap.name != null and paraMap.name != ''">
+		and p.name = #{paraMap.name}
+	</if>
+  </select>
+ 
+ <!-- 获得地图的省份数据 -->
+  <select id="getProvinceData"  resultMap="BaseResultMap">
+select p.province_id,  max(p.name) as name
+          ,round(sum(ff.ticket_office)/10000,2) as ticket_office
+		  , max(ci2.cinema_num) as cinema_count
+		  ,max(ci2.install_num) as installed_count
+		  , max(t.exception_num) as exception_count
+		  ,case 
+		when sum(ff.report_peoples) - sum(ff.verify_peoples) > #{paraMap.province_peoplePlusAbsolute} then 1 
+		 when sum(ff.report_peoples) - sum(ff.verify_peoples) > #{paraMap.province_peoplePlusRelative} * sum(ff.report_peoples) then 1 
+		when sum(ff.verify_peoples) - sum(ff.report_peoples) > #{paraMap.province_peopleMinusAbsolute} then 1 
+		when sum(ff.verify_peoples) - sum(ff.report_peoples) > #{paraMap.province_peopleMinusRelative} * sum(ff.report_peoples) then 1 
+		when sum(ff.is_exception) > #{paraMap.province_showingsAbsolute} then 1 
+		when sum(ff.is_exception) > #{paraMap.province_showingsRelative} * count(ff.hall_id) then 1 
+		 else 0 
+		  end as is_exception 
+		from province p left join city c on p.province_id = c.province_id  
+		  left join cinema ci on ci.city_id = c.city_id  
+		  left join hall h on ci.cinema_id = h.cinema_id  
+		  left join ftfc ff on h.hall_id = ff.hall_id
+		   and ff.play_time >= #{paraMap.startTime}
+  	<![CDATA[
+		        and ff.play_time <= #{paraMap.endTime} 
+  	]]>
+		   and ff.is_audit = 1  
+		  left join ( 
+		    select p2.province_id, count(ci.cinema_id) as cinema_num, sum(ci.state) as install_num  
+		    from province p2 
+		     left join city c on p2.province_id = c.province_id 
+		     left join cinema ci on c.city_id = ci.city_id 
+		     group by p2.province_id 
+		   ) ci2 on p.province_id = ci2.province_id
+		   left join (
+		     select count(tt.cinema_id) as exception_num, tt.province_id from ( 
+		       select ci.cinema_id, max(c.province_id) as province_id
+		       from ftfc ff left join hall h on ff.hall_id = h.hall_id  
+		         left join cinema ci on ci.cinema_id = h.cinema_id 
+		         left join city c on c.city_id = ci.city_id 
+		       where ff.play_time >= #{paraMap.startTime}
+  	<![CDATA[
+		        and ff.play_time <= #{paraMap.endTime}  
+  	]]>
+		       group by ci.cinema_id
+		       having sum(ff.report_peoples) - sum(ff.verify_peoples) > #{paraMap.cinema_peoplePlusAbsolute} or
+				    sum(ff.report_peoples) - sum(ff.verify_peoples) > #{paraMap.cinema_peoplePlusRelative} * sum(ff.report_peoples) or
+			        sum(ff.verify_peoples) - sum(ff.report_peoples) > #{paraMap.cinema_peopleMinusAbsolute} or
+				    sum(ff.verify_peoples) - sum(ff.report_peoples) > #{paraMap.cinema_peopleMinusRelative} * sum(ff.report_peoples) or
+				    sum(ff.is_exception) > #{paraMap.cinema_showingsAbsolute} or 
+			    sum(ff.is_exception) > #{paraMap.cinema_showingsRelative} * count(ff.hall_id) 
+		     ) tt
+		     group by tt.province_id
+		   ) t on t.province_id = p.province_id 
+		group by p.province_id  
+  </select>
+  
+ <!-- 获得地图的城市数据 -->
+  <select id="getCityData"  resultMap="BaseResultMap">
+     select c.city_id, max(c.name) as name, round(sum(ff.ticket_office)/10000,2) as ticket_office, 
+				  max(ci2.cinema_num) as cinema_count, max(ci2.install_num) as installed_count, max(t.exception_num) as exception_count, 
+				  case 
+					  when sum(ff.report_peoples) - sum(ff.verify_peoples) > #{paraMap.city_peoplePlusAbsolute} then 1 
+				   when sum(ff.report_peoples) - sum(ff.verify_peoples) >  #{paraMap.city_peoplePlusRelative} * sum(ff.report_peoples) then 1 
+					  when sum(ff.verify_peoples) - sum(ff.report_peoples) > #{paraMap.city_peopleMinusAbsolute} then 1 
+				   when sum(ff.verify_peoples) - sum(ff.report_peoples) >  #{paraMap.city_peopleMinusRelative}  * sum(ff.report_peoples) then 1 
+					  when sum(ff.is_exception) > #{paraMap.city_showingsAbsolute}  then 1 
+					  when sum(ff.is_exception) > #{paraMap.city_showingsRelative}  * count(ff.hall_id) then 1 
+				  else 0 end as is_exception 
+			from  city c 
+				  join province p on p.province_id = c.province_id 
+				  left join cinema ci  on ci.city_id = c.city_id 
+				  left join hall h on ci.cinema_id = h.cinema_id 
+				  left join ftfc ff on h.hall_id = ff.hall_id
+				   and ff.play_time >= #{paraMap.startTime}
+  	<![CDATA[
+		        and ff.play_time <= #{paraMap.endTime} 
+  	]]>
+				   and ff.is_audit = 1  
+				  left join ( 
+				    select c.city_id, count(ci.cinema_id) as cinema_num, sum(ci.state) as install_num 
+				    from city c join cinema ci on c.city_id = ci.city_id 
+				    group by c.city_id 
+				  ) ci2 on ci.city_id = ci2.city_id 
+				  left join ( 
+				    select count(tt.cinema_id) as exception_num, tt.city_id 
+				    from ( 
+				     select ci.cinema_id, max(ci.city_id) as city_id 
+				     from ftfc ff 
+				      left join hall h on ff.hall_id = h.hall_id 
+				      left join cinema ci on ci.cinema_id = h.cinema_id 
+				     where ff.play_time >= #{paraMap.startTime}
+  	<![CDATA[
+		        and ff.play_time <= #{paraMap.endTime} 
+  	]]>
+				     group by ci.cinema_id 
+				     having sum(ff.report_peoples) - sum(ff.verify_peoples) > #{paraMap.cinema_peoplePlusAbsolute} or 
+						  sum(ff.report_peoples) - sum(ff.verify_peoples) > #{paraMap.cinema_peoplePlusRelative}  * sum(ff.report_peoples) or 
+					      sum(ff.verify_peoples) - sum(ff.report_peoples) > #{paraMap.cinema_peopleMinusAbsolute}  or 
+						  sum(ff.verify_peoples) - sum(ff.report_peoples) > #{paraMap.cinema_peopleMinusRelative} * sum(ff.report_peoples) or 
+				       sum(ff.is_exception) > #{paraMap.cinema_showingsAbsolute} or  
+				       sum(ff.is_exception) > #{paraMap.cinema_showingsRelative} * count(ff.hall_id) 
+				     ) tt 
+				     group by tt.city_id) t 
+				    on t.city_id = c.city_id  
+				where p.name like #{paraMap.provinceName} 
+				group by c.city_id
+  </select>
+ 
+ <!-- 获得地图的影院数据 -->
+  <select id="getCinemaData"  resultMap="BaseResultMap">
+   select p.province_id,  c.city_id, ci.cinema_id, ci.name, ci.longitude, ci.latitude, ci.halls, ci.seats,t.is_exception  
+		from cinema ci Left join city c on ci.city_id = c.city_id 
+		 Left join province p on p.province_id = c.province_id 
+		 Left join ( 
+		 select ci2.cinema_id, 
+		 case 
+		 when sum(ff.report_peoples) - sum(ff.verify_peoples) > #{paraMap.cinema_peoplePlusAbsolute} then 1 
+		 when sum(ff.report_peoples) - sum(ff.verify_peoples) > #{paraMap.cinema_peoplePlusRelative} * sum(ff.report_peoples) then 1 
+		 when sum(ff.verify_peoples) - sum(ff.report_peoples) > #{paraMap.cinema_peopleMinusAbsolute} then 1 
+		 when sum(ff.verify_peoples) - sum(ff.report_peoples) > #{paraMap.cinema_peopleMinusRelative} * sum(ff.report_peoples) then 1 
+		 when sum(ff.is_exception) > #{paraMap.cinema_showingsAbsolute} then 1 
+		 when sum(ff.is_exception) > #{paraMap.cinema_showingsRelative} * count(ff.hall_id) then 1 
+		 else 0 end as is_exception 
+		 from cinema ci2 join hall h on ci2.cinema_id = h.cinema_id 
+		 Left join ftfc ff on h.hall_id = ff.hall_id  
+		 where ff.play_time >= #{paraMap.startTime} and 
+  	<![CDATA[
+		 ff.play_time <= #{paraMap.endTime}
+  	]]>
+		 and ff.is_audit = 1  
+		 group by ci2.cinema_id 
+		  ) t on t.cinema_id = ci.cinema_id 
+		where ci.state = 1
+	<if test="paraMap.provinceName != null and paraMap.provinceName != ''">
+		and p.name like concat(#{paraMap.provinceName},'%')
+	</if>
+		 
+  </select>
+</mapper>

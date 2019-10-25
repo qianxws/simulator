@@ -1,0 +1,84 @@
+<div id="vmEdit" class="tab-content">
+	<div class="row">
+		<div class="col-xs-12">
+			<form class="form-horizontal" id="validation-form" role="form">
+				<div>
+					<div class="form-group">
+						<label class="col-sm-4 control-label no-padding-right" for="dataSourceId"><strong class="str">*</strong> 数据源名称：</label>
+						<div class="col-sm-6">
+							<div class="clearfix">
+								<input type="text"  name="dataSourceId" v-model="item.dataSourceId" placeholder="数据源名称" class="col-sm-8"/>
+							</div>
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-sm-4 control-label no-padding-right" for="driver"><strong class="str">*</strong> 驱动：</label>
+						<div class="col-sm-6">
+							<div class="clearfix">
+								<input type="text" name="driver" v-model="item.driver" placeholder="驱动" class="col-sm-8" />
+							</div>
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-sm-4 control-label no-padding-right" for="url"><strong class="str">*</strong>数据库地址：</label>
+						<div class="col-sm-6">
+							<div class="clearfix">
+								<input type="text" name="url" v-model="item.url" placeholder="数据库地址" class="col-sm-8"/>
+							</div>
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-sm-4 control-label no-padding-right" for="username"><strong class="str">*</strong>用户名：</label>
+						<div class="col-sm-6">
+							<div class="clearfix">
+								<input type="text" name="username" v-model="item.username" placeholder="用户名" class="col-sm-8" />
+							</div>
+						</div>
+				   	</div>
+					<div class="form-group">
+						<label class="col-sm-4 control-label no-padding-right" for="password"><strong class="str">*</strong> 密码：</label>
+						<div class="col-sm-6">
+							<div class="clearfix">
+								<input type="text" name="password" v-model="item.password" placeholder="密码" class="col-sm-8" />
+							</div>
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-sm-4 control-label no-padding-right" for="initialsize"><strong class="str">*</strong> 初始化值：</label>
+						<div class="col-sm-6">
+							<div class="clearfix">
+								<input type="text" name="initialsize" v-model="item.initialsize" placeholder="初始化值" class="col-sm-8" />
+							</div>
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-sm-4 control-label no-padding-right" for="maxactive"><strong class="str">*</strong> 最大连接数：</label>
+						<div class="col-sm-6">
+							<div class="clearfix">
+								<input type="text" name="maxactive" v-model="item.maxactive" placeholder="最大连接数" class="col-sm-8" />
+							</div>
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-sm-4 control-label no-padding-right" for="maxwait"><strong class="str">*</strong> 超时时间：</label>
+						<div class="col-sm-6">
+							<div class="clearfix">
+								<input type="text" name="maxwait" v-model="item.maxwait" placeholder="超时时间" class="col-sm-8" />
+							</div>
+						</div>
+					</div>
+				</div>
+			</form>
+		</div>
+	</div>
+</div>
+<script src="modules/dbconfig/edit.js"></script>
+<!--[if IE]>
+<script type="text/javascript" src="assets/js/jquery.placeholder.js"></script>
+<script type="text/javascript">
+	$(function () {
+		// Invoke the plugin
+		$('input, textarea').placeholder();
+	});
+</script>
+<![endif]-->

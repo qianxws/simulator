@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cinema.common.dao.DataExportMapper">
+   <!-- 查询导出影片数据条数 -->
+  <select id="getFilmTotal"    resultType="int">
+     select count(1) from test_film
+  </select>
+  
+   <!-- 查询导出影片 -->
+  <select id="getFilmExcel"   resultType="java.util.LinkedHashMap">
+      select  t.name as 名称,t.film_code as 编码, film_time as 日期
+	   from test_film t
+	  limit #{rows} offset #{offset}
+  </select>
+</mapper>

@@ -1,0 +1,87 @@
+<div id="vm-output" style="margin:0px 14px;">
+	<div class="row" v-show="!isComplete">
+		<span>正在生成excel文件：</span>
+	</div>
+	<div class="row" v-show="!isComplete">
+		<div class="col-sm-10 col-sm-offset-1" id="gropress">
+			<div class="progress pos-rel" :data-percent="dataPercent + '%'">
+				<div class="progress-bar" :style="{width: dataPercent + '%'}"></div>
+			</div>
+		</div>
+	</div>
+	<div class="row" v-show="isComplete && isSuccess">
+		<span>文件正在下载，如果浏览器没有响应，
+			<b @click="downloadExcel()" class="green" style="cursor:pointer;">请点击这里下载</b>。
+		</span>
+	</div>
+	<div class="row" v-show="isComplete && !isSuccess">
+		<span>文件生成失败，请稍后再试！</span>
+	</div>
+</div>
+
+<script>
+	var vmOutput = new Vue({
+		el : '#vm-output',
+		data : {
+			dataPercent : '0',
+			downloadPath : '',
+			isComplete : false,
+			isSuccess : true,
+			fileName : '',	//下载文件名称
+			action : '',	//action类名
+			verb : ''		//方法名
+		},
+		methods : {
+			init : function(){
+				//生成下载文件
+				JqdeMods.ajax(this.action, this.verb, {}).then(function(result) {
+					vmOutput.isComplete = true;
+					if (result.filePath){
+						vmOutput.downloadPath = result.filePath;
+						//下载(浏览器可能拦截)
+						vmOutput.downloadExcel();
+					}else {
+						vmOutput.isSuccess = false;
+					}
+				});
+				//刷新进度条
+				this.updateGropress();
+			},
+			//刷新进度条
+			updateGropress : function() {
+				if (vmOutput.isComplete){
+					vmOutput.dataPercent = '100';
+					return;
+				}
+				var gropress_div = $('#gropress');
+				JqdeMods.ajax('cinemaAction', 'updatePress', {}).then(function (result) {
+					if (result.success){
+						if (result.gropress > 1) {
+							result.gropress = 1;
+							vmOutput.isComplete = false;
+						}
+						vmOutput.dataPercent = (result.gropress * 100).toFixed(2);
+		        		setTimeout(vmOutput.updateGropress(), 500);
+		        	}
+				});
+			},
+			//下载文件
+			downloadExcel : function() {
+				var fileName = vmOutput.fileName;
+				var path = vmOutput.downloadPath;
+				var inputs = "<input type='hidden' name='fileName' value='"+this.encodeUnicode(fileName)+"'>";
+				inputs += "<input type='hidden' name='path' value='" + path + "'>";
+				inputs += "<input type='hidden' name='token' value='" + token + "'>";
+				$("<form  action='download/downloadByPath?token='"+token+" method='post' >"+inputs+"</form>").appendTo('body').submit().remove();
+			},
+			encodeUnicode :function(str){
+				var res=[];
+				for(var i=0;i<str.length;i++){
+					res[i]=("00"+str.charCodeAt(i).toString(16)).slice(-4);
+				}
+				return "\\u"+res.join("\\u");
+			}
+		}
+	});
+	
+</script>

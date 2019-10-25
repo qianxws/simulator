@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cinema.common.dao.DataImportMapper">
+  <resultMap id="BaseResultMap" type="com.cinema.common.model.ImportError">
+    <result column="row_num" jdbcType="NUMERIC" property="rowNum" />
+    <result column="error" jdbcType="VARCHAR" property="error" />
+  </resultMap>
+ 
+<!-- 导入预处理步骤：1、插入不存在的类别；2、更新类别；3、检查重复错误；4、得到错误列表 -->
+	<select id="getImportErrorFilm_mysql"    resultMap="BaseResultMap">
+#插入不存在的发行版本
+	 insert into sys_dictionary(name,dictionary_id,creator,create_time)
+	 select name,replace(uuid(),'-','') as dictionary_id,'admin' as creator,create_time
+	  FROM
+		(
+		  select version as name,max(create_time) as create_time
+		    from excel_film where  version not in(select name from sys_dictionary) group by version
+		) a;
+	
+#插入不存在的片种
+	insert into sys_dictionary(name,dictionary_id,creator,create_time)
+	 select name,replace(uuid(),'-','') as dictionary_id,'admin' as creator,create_time
+	  FROM
+		(
+		  select kind as name,max(create_time) as create_time
+		    from excel_film where  kind not in(select name from sys_dictionary) group by kind
+		) a;
+		
+#插入不存在的影片类别
+	insert into sys_dictionary(name,dictionary_id,creator,create_time)
+	 select name,replace(uuid(),'-','') as dictionary_id,'admin' as creator,create_time
+	  FROM
+		(
+		  select filmtype as name,max(create_time) as create_time
+		    from excel_film where  filmtype not in(select name from sys_dictionary) group by filmtype
+		) a;
+		
+#更新film_version_id
+		update excel_film t,sys_dictionary t2 
+		 set t.film_version_id= t2.dictionary_id
+	  	where t.version = t2.name;
+	  	
+		
+#更新kinds_id
+		update excel_film t,sys_dictionary t2 
+		 set t.kinds_id= t2.dictionary_id
+	  	where t.kind = t2.name;
+
+  	     
+#更新film_type_id
+		update excel_film t,sys_dictionary t2 
+		  set t.film_type_id=t2.dictionary_id
+		where t.filmtype=t2.name;
+		
+#检查重复错误 	
+		update excel_film t,test_film t2
+		 set error='记录已存在,' 
+		where t.code=t2.film_id;
+
+#得到错误列表
+  	     select row_num,error from excel_film where error !='' order by row_num;
+    </select>
+
+	<select id="getImportErrorFilm_postgresql"    resultMap="BaseResultMap">
+--插入不存在的发行版本
+	 insert into sys_dictionary(name,dictionary_id,creator,create_time)
+	 select name,uuid_generate_v1() as dictionary_id,'admin' as creator,create_time
+	  FROM
+		(
+		  select version as name,max(create_time) as create_time
+		    from excel_film where  version not in(select name from sys_dictionary) group by version
+		) a;
+	
+--插入不存在的片种
+	insert into sys_dictionary(name,dictionary_id,creator,create_time)
+	 select name,uuid_generate_v1() as dictionary_id,'admin' as creator,create_time
+	  FROM
+		(
+		  select kind as name,max(create_time) as create_time
+		    from excel_film where  kind not in(select name from sys_dictionary) group by kind
+		) a;
+		
+--插入不存在的影片类别
+	insert into sys_dictionary(name,dictionary_id,creator,create_time)
+	 select name,uuid_generate_v1() as dictionary_id,'admin' as creator,create_time
+	  FROM
+		(
+		  select filmtype as name,max(create_time) as create_time
+		    from excel_film where  filmtype not in(select name from sys_dictionary) group by filmtype
+		) a;
+		
+--更新film_version_id
+		update excel_film set film_version_id= sys_dictionary.dictionary_id
+	  	 from sys_dictionary
+	  	where version = sys_dictionary.name;
+		
+--更新kinds_id
+		update excel_film set kinds_id= sys_dictionary.dictionary_id
+	  	 from sys_dictionary
+	  	where kind = sys_dictionary.name;
+		
+--更新film_type_id
+		update excel_film set film_type_id= sys_dictionary.dictionary_id
+	  	 from sys_dictionary
+	  	where filmtype = sys_dictionary.name;
+		
+--检查重复错误  	
+		update excel_film t set error='记录已存在,' 
+		  from test_film 
+		 where t.code=test_film.film_id;
+		
+--得到错误列表
+  	     select row_num,error from excel_film where error !='' order by row_num;
+    </select>
+    
+  	<update id="importFilm" >
+	 	insert into test_film(film_id,film_code,name,film_version_id,film_type_id,kinds_id,film_time,creator,create_time) 
+	 	 select code  as film_id,code as filmcode,name,film_version_id,film_type_id,kinds_id ,playtime as film_time,'admin' as creator,create_time
+	 	  from excel_film t 
+          where error =''; 
+  	</update>
+  	
+
+</mapper>

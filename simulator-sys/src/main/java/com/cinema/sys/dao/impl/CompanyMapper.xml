@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cinema.sys.dao.CompanyMapper">
+  <resultMap id="BaseResultMap" type="com.cinema.sys.model.Company">
+    <id column="company_id" jdbcType="VARCHAR" property="id" />
+    <result column="area_id" jdbcType="VARCHAR" property="areaId" />
+    <result column="nid" jdbcType="INTEGER" property="nid" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="domain" jdbcType="VARCHAR" property="domain" />
+    <result column="contact" jdbcType="VARCHAR" property="contact" />
+    <result column="introduce" jdbcType="VARCHAR" property="introduce" />
+    <result column="address" jdbcType="VARCHAR" property="address" />
+    <result column="main_products" jdbcType="VARCHAR" property="mainProducts" />
+    <result column="pic" jdbcType="VARCHAR" property="pic" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="creator" jdbcType="VARCHAR" property="creator" />
+  </resultMap>
+   <sql id="table">
+   sys_company
+  </sql>
+ <sql id="Base_Column_List">
+	  select 
+	    company_id, area_id,nid, name,domain, contact, introduce, address,main_products, pic, create_time,creator
+	  from sys_company
+  </sql>
+  <select id="getDetail" parameterType="Map" resultMap="BaseResultMap">
+    <include refid="Base_Column_List" />
+     where 1=1
+	<if test="domain != null and domain != ''">
+	   and domain = #{domain}
+	</if>
+	<if test="nid != null and nid != ''">
+	   and nid = #{nid}
+	</if>
+	<if test="name != null and name != ''">
+	   and name = #{name}
+	</if>
+    <if test="id != null and id != ''">
+		and company_id = #{id}
+	</if>
+    <if test="companyId != null and companyId != ''">
+		and company_id = #{companyId}
+	</if>
+    <if test="contact != null and contact != ''">
+		and contact = #{contact}
+	</if>
+  </select>
+  <select id="getList"  parameterType="Map" resultMap="BaseResultMap">
+    <include refid="Base_Column_List" />
+    where 1=1
+	<if test="name != null and name != ''">
+		and name like concat(concat('%',#{name}),'%')
+	</if>
+	<if test="companyName != null and companyName != ''">
+		and name =#{companyName}
+	</if>
+	<if test="areaId != null and areaId !='' and areaId !='0'">
+		and area_id like concat(#{areaId},'%')
+	</if>
+  	<if test="startTime != null and startTime != ''">
+  		and create_time >= #{startTime}
+  	</if>
+  	<if test="endTime != null and endTime != ''">
+  	<![CDATA[
+  		and create_time <= #{endTime}
+  	]]>
+  	</if>
+	order by create_time desc
+  </select>
+  <select id="getMaxNid" resultType="Integer">
+	select max(nid) 
+		from <include refid="table" />
+  </select>
+</mapper>

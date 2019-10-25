@@ -1,0 +1,109 @@
+<div id="vmEdit" class="tabbable"  :controller="vmEdit">
+    <div id="home" class="tab-pane fade in active">
+        <div class="row">
+            <div class="col-xs-12">
+                <!-- PAGE CONTENT BEGINS -->
+                <form class="form-horizontal" id="validation-form" role="form">
+                   <div class="form-group">
+                        <label class="col-sm-5 control-label no-padding-right" for="name"> 名称：</label>
+                        <div class="col-sm-6">
+                            <div class="clearfix">
+                                <input type="text" name="name" :duplex="model.name" placeholder="输入名称" class="col-xs-6"/>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-5 control-label no-padding-right" for="code"> 编码： </label>
+
+                        <div class="col-sm-6">
+                            <div class="clearfix">
+                                <input type="text"  name="code" :duplex="model.code" placeholder="输入编码" class="col-xs-6"
+                                       onkeyup="this.value=this.value.replace(/[\W]/g,'');"  />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                         <label class="col-sm-5 control-label no-padding-right"> 上级节点：</label>
+	                     <div class="col-sm-6">
+	                     	<div class="clearfix">
+	                        	<div style="position: relative;">
+									<input type="hidden" id="edit" name="edit" />
+									<input type="text" id="pname" name="pname" placeholder="选择父节点" class="col-xs-6" />
+									<div id="authTree" code="authTree" class="text-down-t">
+										<ul id="authsTree" class="ztree" style="height:239px;overflow-y: auto"></ul>
+									</div>
+									<i id="authTreeBtn" class="ace-icon fa fa-caret-down icon-down-i"></i>
+									<input type="text" id="pid" name="pid" style="display: none"/> 
+									<input type="text" id="parentId" name="parentId" style="display: none"/> 
+								</div>
+							</div>
+                         </div>
+                    </div>
+				    <div class="form-group">
+				        <label class="col-sm-5 control-label no-padding-right"> 状态：</label>
+				        <div class="col-sm-6" style=" margin-top: 7px;">
+				            <input type="radio" ms-duplex="model.state" name="state" value="1">正常
+				            <input type="radio" ms-duplex="model.state" name="state" value="0"/>禁用
+				        </div>
+				    </div>
+				    <div class="form-group">
+				        <label class="col-sm-5 control-label no-padding-right"> 缺省权限：</label>
+				        <div class="col-sm-6" style=" margin-top: 7px;">
+				            <input type="radio" ms-duplex="model.isDefault" name="isDefault" value="true">是
+				            <input type="radio" ms-duplex="model.isDefault" name="isDefault" value="false"/>否
+				        </div>
+				    </div>
+                </form>
+            </div><!-- /.col -->
+        </div><!-- /.row -->
+    </div>
+</div>
+
+<style>
+.modal-dialog {
+	width: 768px;
+}
+
+.help-block {
+	display: inline-block;
+	margin-left: 8px;
+}
+
+.widget-body {
+	background-color: #FFF;
+	height: 320px;
+	overflow-y: scroll;
+}
+.icon-down-i {
+	display: inline-block;
+	z-index:99;
+	margin-left: -14px;
+	top: 10px;
+	position: absolute;
+	font-size: 12px; 
+	color: #858585; 
+	text-align: center; 
+	width: 4px;
+}
+.text-down-t {
+	position: absolute; 
+	min-height: 20px; 
+	max-height: 240px; 
+	border: 1px #d5d5d5 solid; 
+	background-color: #ffffff; 
+	top: 34px; 
+	z-index: 999; 
+	border-top: none; 
+	display: none; 
+	overflow-y: auto;
+}
+</style>
+<link rel="stylesheet" href="jslib/zTree/css/zTreeStyle/zTreeStyle.css" type="text/css">
+<script type="text/javascript" src="jslib/zTree/js/jquery.ztree.core.js"></script>
+<script type="text/javascript" src="jslib/zTree/js/jquery.ztree.excheck.js"></script>
+<script type="text/javascript" src="js/ztree.js"></script>
+<script type="text/javascript" src="js/selectType.js"></script>
+<script type="text/javascript" src="js/pinyin.js"></script>
+<script type="text/javascript" src="js/pinyin2.js"></script>
+<script src="modules/auth2/editTree.js"></script>
+<script src="modules/auth2/edit.js"></script>
